@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UnitMeasure {
+  g
+  ml
+  un
+}
+
+enum TaxRegime {
+  SIMPLES
+  LUCRO_PRESUMIDO
+  LUCRO_REAL
+}
+
+enum TaxConfidence {
+  APPROVED
+  REVIEW_REQUIRED
+  BLOCKED
+}
+
+enum FiscalStrategy {
+  COMBINED_FOOD_SERVICE
+  SPLIT_INGREDIENTS_PREPARATION_FEE
+}
+
+model TaxClassification {
+  id                              String              @id @default(cuid())
+  sourceVersion                   String
+  cstIbsCbs                       String
+  cstDescription                  String
+  cClassTrib                      String              @unique
+  cClassName                      String
+  cClassDescription               String?
+  rateType                        String?
+  pRedIbs                         Decimal             @default(0) @db.Decimal(5, 2)
+  pRedCbs                         Decimal             @default(0) @db.Decimal(5, 2)
+  appliesNfe                      Boolean             @default(true)
+  appliesNfce                     Boolean             @default(true)
+  appliesNfse                     Boolean             @default(false)
+  legalReference                  String?
+  effectiveFrom                   DateTime?
+  effectiveTo                     DateTime?
+  createdAt                       DateTime            @default(now())
+  updatedAt                       DateTime            @updatedAt
+  ingredients                     Ingredient[]
+  productTaxProfiles              ProductTaxProfile[] @relation("ProductTaxClassification")
+  preparationFeeTaxProfiles       ProductTaxProfile[] @relation("PreparationFeeTaxClassification")
+}
+
+model Ingredient {
+  id                  String             @id @default(cuid())
+  name                String             @unique
+  unitMeasure         UnitMeasure
+  unitCost            Decimal            @db.Decimal(12, 4)
+  stockCurrent        Decimal            @db.Decimal(14, 3)
+  ncm                 String
+  pisCst              String             @default("06")
+  cofinsCst           String             @default("06")
+  icmsCst             String?
+  icmsCsosn           String?
+  taxBenefitCode      String?
+  taxConfidence       TaxConfidence      @default(REVIEW_REQUIRED)
+  taxNotes            String?
+  taxClassificationId String?
+  taxClassification   TaxClassification? @relation(fields: [taxClassificationId], references: [id])
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  productIngredients  ProductIngredient[]
+}
+
+model Product {
+  id                 String          @id @default(cuid())
+  name               String
+  sku                String          @unique
+  category           String
+  salePrice          Decimal         @db.Decimal(12, 2)
+  active             Boolean         @default(true)
+  preparationFee     Decimal         @default(5.00) @db.Decimal(12, 2)
+  fiscalStrategy     FiscalStrategy  @default(SPLIT_INGREDIENTS_PREPARATION_FEE)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  ingredients        ProductIngredient[]
+  taxProfile         ProductTaxProfile?
+}
+
+model ProductIngredient {
+  id                String     @id @default(cuid())
+  productId         String
+  ingredientId      String
+  qtyUsed           Decimal    @db.Decimal(14, 3)
+  unitCostSnapshot  Decimal    @db.Decimal(12, 4)
+  totalCostSnapshot Decimal    @db.Decimal(12, 4)
+  createdAt         DateTime   @default(now())
+  product           Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  ingredient        Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@unique([productId, ingredientId])
+}
+
+model ProductTaxProfile {
+  productId                          String             @id
+  uf                                 String             @default("DF")
+  taxRegime                          TaxRegime          @default(SIMPLES)
+  ncm                                String
+  csosn                              String
+  pisCst                             String
+  cofinsCst                          String
+  cstIbsCbs                          String
+  cClassTrib                         String
+  taxClassificationId                String?
+  preparationFeeNcm                  String             @default("21069090")
+  preparationFeeCstIbsCbs            String
+  preparationFeeCClassTrib           String
+  preparationFeeTaxClassificationId  String?
+  fiscalStrategy                     FiscalStrategy
+  legalBasis                         String?
+  requiresLegalReview                Boolean            @default(true)
+  createdAt                          DateTime           @default(now())
+  updatedAt                          DateTime           @updatedAt
+  product                            Product            @relation(fields: [productId], references: [id], onDelete: Cascade)
+  taxClassification                  TaxClassification? @relation("ProductTaxClassification", fields: [taxClassificationId], references: [id])
+  preparationFeeTaxClassification    TaxClassification? @relation("PreparationFeeTaxClassification", fields: [preparationFeeTaxClassificationId], references: [id])
+}
+

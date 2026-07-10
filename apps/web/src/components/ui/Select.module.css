@@ -1,0 +1,32 @@
+.field {
+  display: grid;
+  gap: 7px;
+}
+
+.field span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.field select {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  min-height: 42px;
+  outline: none;
+  padding: 0 12px;
+  width: 100%;
+}
+
+.field select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.13);
+}
+
+.field small {
+  color: var(--danger);
+  font-weight: 700;
+}
+

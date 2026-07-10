@@ -1,0 +1,22 @@
+{
+  "name": "pluxsales",
+  "private": true,
+  "version": "0.1.0",
+  "description": "PluxSales monorepo for food service menu engineering, CMV and fiscal classification.",
+  "scripts": {
+    "dev": "pnpm --parallel --filter @pluxsales/api --filter @pluxsales/web dev",
+    "build": "pnpm --filter @pluxsales/api build && pnpm --filter @pluxsales/web build",
+    "typecheck": "pnpm --filter @pluxsales/api typecheck && pnpm --filter @pluxsales/web typecheck",
+    "db:generate": "pnpm --filter @pluxsales/api prisma:generate",
+    "db:migrate": "pnpm --filter @pluxsales/api prisma:migrate",
+    "db:deploy": "pnpm --filter @pluxsales/api prisma:migrate:deploy",
+    "db:seed": "pnpm --filter @pluxsales/api prisma:seed",
+    "render:build": "pnpm --filter @pluxsales/api prisma:generate && pnpm --filter @pluxsales/api build",
+    "render:start": "pnpm --filter @pluxsales/api start",
+    "vercel:build": "pnpm --filter @pluxsales/web build"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "pnpm@11.7.0"
+}

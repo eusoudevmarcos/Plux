@@ -3,7 +3,7 @@ services:
     name: pluxsales-api
     runtime: node
     rootDir: .
-    buildCommand: corepack enable && corepack prepare pnpm@11.7.0 --activate && pnpm install --frozen-lockfile && pnpm render:build
+    buildCommand: corepack enable && corepack prepare pnpm@11.7.0 --activate && pnpm install --frozen-lockfile --prod=false && pnpm render:build
     preDeployCommand: corepack enable && corepack prepare pnpm@11.7.0 --activate && pnpm db:deploy
     startCommand: corepack enable && corepack prepare pnpm@11.7.0 --activate && pnpm render:start
     initialDeployHook: corepack enable && corepack prepare pnpm@11.7.0 --activate && pnpm db:seed
@@ -24,4 +24,3 @@ databases:
   - name: pluxsales-postgres
     databaseName: pluxsales
     user: pluxsales
-

@@ -62,7 +62,7 @@ Depois crie um Web Service para a API:
 Root Directory: .
 Runtime: Node
 Build Command:
-corepack enable && corepack prepare pnpm@11.7.0 --activate && pnpm install --frozen-lockfile && pnpm render:build
+corepack enable && corepack prepare pnpm@11.7.0 --activate && pnpm install --frozen-lockfile --prod=false && pnpm render:build
 
 Pre-Deploy Command:
 corepack enable && corepack prepare pnpm@11.7.0 --activate && pnpm db:deploy

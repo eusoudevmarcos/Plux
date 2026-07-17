@@ -44,5 +44,9 @@ export const productCreateFullSchema = z.object({
   fiscal: productFiscalSchema,
 });
 
-export type ProductCreateFullInput = z.infer<typeof productCreateFullSchema>;
+export const productActiveUpdateSchema = z.object({
+  active: z.coerce.boolean(),
+});
 
+export type ProductCreateFullInput = z.infer<typeof productCreateFullSchema>;
+export type ProductActiveUpdateInput = z.infer<typeof productActiveUpdateSchema>;

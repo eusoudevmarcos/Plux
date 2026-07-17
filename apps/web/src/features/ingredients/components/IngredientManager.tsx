@@ -13,6 +13,7 @@ import styles from "./Ingredients.module.css";
 export function IngredientManager() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [taxClassifications, setTaxClassifications] = useState<TaxClassification[]>([]);
+  const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,18 +43,25 @@ export function IngredientManager() {
 
       <div className={styles.grid}>
         <Card className={styles.formCard}>
-          <IngredientForm taxClassifications={taxClassifications} onCreated={refresh} />
+          <IngredientForm
+            ingredient={editingIngredient}
+            taxClassifications={taxClassifications}
+            onCancelEdit={() => setEditingIngredient(null)}
+            onSaved={async () => {
+              setEditingIngredient(null);
+              await refresh();
+            }}
+          />
         </Card>
 
         <Card className={styles.listCard}>
           {loading ? (
             <div className={styles.empty}>Carregando ingredientes...</div>
           ) : (
-            <IngredientList ingredients={ingredients} onChanged={refresh} />
+            <IngredientList ingredients={ingredients} onEdit={setEditingIngredient} onChanged={refresh} />
           )}
         </Card>
       </div>
     </section>
   );
 }
-

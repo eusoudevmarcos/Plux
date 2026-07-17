@@ -29,6 +29,18 @@ function buildCorsOrigin(): FastifyCorsOptions["origin"] {
   };
 }
 
+function isDatabaseUnavailableError(error: unknown) {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  return (
+    error.name === "PrismaClientInitializationError" ||
+    error.message.includes("Can't reach database server") ||
+    error.message.includes("Can't reach database")
+  );
+}
+
 export async function buildApp() {
   const app = Fastify({
     logger: true,
@@ -52,6 +64,14 @@ export async function buildApp() {
 
   app.setErrorHandler((error, _request, reply) => {
     app.log.error(error);
+
+    if (isDatabaseUnavailableError(error)) {
+      return reply.code(503).send({
+        message:
+          "Banco de dados indisponível. Configure DATABASE_URL para um PostgreSQL ativo ou suba o Postgres local.",
+      });
+    }
+
     return reply.code(500).send({ message: "Erro interno da API." });
   });
 

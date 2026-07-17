@@ -1,7 +1,7 @@
 import type { Prisma, TaxClassification } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 import { calculateIbsCbsLine, roundMoney } from "../tax/tax-rates.js";
-import type { ProductCreateFullInput } from "./products.schema.js";
+import type { ProductActiveUpdateInput, ProductCreateFullInput } from "./products.schema.js";
 
 type TxClient = Prisma.TransactionClient;
 
@@ -137,6 +137,49 @@ export async function listProducts() {
       },
     },
     orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function getProductById(id: string) {
+  return prisma.product.findUnique({
+    where: { id },
+    include: {
+      ingredients: {
+        include: {
+          ingredient: {
+            include: { taxClassification: true },
+          },
+        },
+      },
+      taxProfile: {
+        include: {
+          taxClassification: true,
+          preparationFeeTaxClassification: true,
+        },
+      },
+    },
+  });
+}
+
+export async function updateProductActive(id: string, input: ProductActiveUpdateInput) {
+  return prisma.product.update({
+    where: { id },
+    data: { active: input.active },
+    include: {
+      ingredients: {
+        include: {
+          ingredient: {
+            include: { taxClassification: true },
+          },
+        },
+      },
+      taxProfile: {
+        include: {
+          taxClassification: true,
+          preparationFeeTaxClassification: true,
+        },
+      },
+    },
   });
 }
 
@@ -276,4 +319,3 @@ export async function createProductFull(input: ProductCreateFullInput) {
     };
   });
 }
-

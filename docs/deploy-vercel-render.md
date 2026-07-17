@@ -153,3 +153,21 @@ https://SUA-API.onrender.com/health
 https://SEU-PROJETO.vercel.app
 ```
 
+## 6. Checklist antes do deploy
+
+Rode localmente:
+
+```bash
+pnpm db:generate
+pnpm --filter @pluxsales/api exec prisma validate
+pnpm typecheck
+pnpm build
+```
+
+Confirme que existe ao menos uma pasta em:
+
+```text
+apps/api/prisma/migrations
+```
+
+Sem migration versionada, o comando `prisma migrate deploy` não cria as tabelas no Render Postgres.

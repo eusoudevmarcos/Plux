@@ -119,6 +119,8 @@ PATCH  /ingredients/:id
 DELETE /ingredients/:id
 
 GET    /products
+GET    /products/:id
+PATCH  /products/:id/active
 POST   /products/create-full
 
 GET    /tax-classifications
@@ -132,6 +134,7 @@ GET    /tax-classifications
 - Backend recalcula CMV e simulação fiscal na transação.
 - Produto em estratégia split não aceita taxa de preparo maior que o preço de venda.
 - Classificação tributária é selecionada a partir do catálogo interno versionado.
+- Se o banco estiver fora, a API responde 503 com orientação para configurar `DATABASE_URL`.
 
 ## Deploy em produção
 

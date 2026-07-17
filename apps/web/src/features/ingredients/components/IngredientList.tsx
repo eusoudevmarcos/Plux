@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { formatMoney } from "@/lib/utils/money";
 import { deleteIngredient } from "../api/ingredientsApi";
@@ -15,9 +15,11 @@ const confidenceLabel = {
 
 export function IngredientList({
   ingredients,
+  onEdit,
   onChanged,
 }: {
   ingredients: Ingredient[];
+  onEdit: (ingredient: Ingredient) => void;
   onChanged: () => Promise<void>;
 }) {
   async function handleDelete(id: string) {
@@ -69,6 +71,9 @@ export function IngredientList({
                 <span className={styles.badge}>{confidenceLabel[ingredient.taxConfidence]}</span>
               </td>
               <td>
+                <Button variant="ghost" title="Editar ingrediente" onClick={() => onEdit(ingredient)}>
+                  <Pencil size={16} aria-hidden />
+                </Button>
                 <Button variant="ghost" title="Remover ingrediente" onClick={() => handleDelete(ingredient.id)}>
                   <Trash2 size={16} aria-hidden />
                 </Button>
@@ -80,4 +85,3 @@ export function IngredientList({
     </div>
   );
 }
-

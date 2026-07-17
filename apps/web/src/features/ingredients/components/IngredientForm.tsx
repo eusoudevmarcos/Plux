@@ -1,15 +1,16 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Save } from "lucide-react";
-import { useState } from "react";
+import { Save, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import type { TaxClassification } from "@/features/tax/types";
-import { createIngredient } from "../api/ingredientsApi";
+import { createIngredient, updateIngredient } from "../api/ingredientsApi";
 import { ingredientFormSchema, type IngredientFormValues } from "../schemas/ingredient.schema";
+import type { Ingredient } from "../types";
 import styles from "./Ingredients.module.css";
 
 const defaultValues: IngredientFormValues = {
@@ -29,12 +30,17 @@ const defaultValues: IngredientFormValues = {
 };
 
 export function IngredientForm({
+  ingredient,
   taxClassifications,
-  onCreated,
+  onSaved,
+  onCancelEdit,
 }: {
+  ingredient?: Ingredient | null;
   taxClassifications: TaxClassification[];
-  onCreated: () => Promise<void>;
+  onSaved: () => Promise<void>;
+  onCancelEdit: () => void;
 }) {
+  const isEditing = Boolean(ingredient);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const form = useForm<IngredientFormValues>({
@@ -42,24 +48,65 @@ export function IngredientForm({
     defaultValues,
   });
 
+  const editValues = useMemo<IngredientFormValues | null>(() => {
+    if (!ingredient) {
+      return null;
+    }
+
+    return {
+      name: ingredient.name,
+      unitMeasure: ingredient.unitMeasure,
+      unitCost: Number(ingredient.unitCost),
+      stockCurrent: Number(ingredient.stockCurrent),
+      ncm: ingredient.ncm,
+      pisCst: ingredient.pisCst,
+      cofinsCst: ingredient.cofinsCst,
+      icmsCst: ingredient.icmsCst ?? "",
+      icmsCsosn: ingredient.icmsCsosn ?? "",
+      taxBenefitCode: ingredient.taxBenefitCode ?? "",
+      taxConfidence: ingredient.taxConfidence,
+      taxClassificationId: ingredient.taxClassificationId ?? "",
+      taxNotes: ingredient.taxNotes ?? "",
+    };
+  }, [ingredient]);
+
+  useEffect(() => {
+    form.reset(editValues ?? defaultValues);
+    setMessage(null);
+    setError(null);
+  }, [editValues, form]);
+
   async function onSubmit(values: IngredientFormValues) {
     setMessage(null);
     setError(null);
 
     try {
-      await createIngredient(values);
+      if (ingredient) {
+        await updateIngredient(ingredient.id, values);
+      } else {
+        await createIngredient(values);
+      }
+
       form.reset(defaultValues);
-      await onCreated();
-      setMessage("Ingrediente criado.");
+      await onSaved();
+      setMessage(isEditing ? "Ingrediente atualizado." : "Ingrediente criado.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao criar ingrediente.");
+      setError(err instanceof Error ? err.message : "Erro ao salvar ingrediente.");
     }
   }
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className={styles.form}>
       <div className={styles.cardHeader}>
-        <h3>Novo ingrediente</h3>
+        <div>
+          <h3>{isEditing ? "Editar ingrediente" : "Novo ingrediente"}</h3>
+          {isEditing ? <span>{ingredient?.name}</span> : null}
+        </div>
+        {isEditing ? (
+          <Button type="button" variant="ghost" onClick={onCancelEdit} title="Cancelar edição">
+            <X size={16} aria-hidden />
+          </Button>
+        ) : null}
       </div>
 
       <div className={styles.twoCols}>
@@ -112,9 +159,8 @@ export function IngredientForm({
 
       <Button type="submit" disabled={form.formState.isSubmitting}>
         <Save size={16} aria-hidden />
-        Salvar
+        {isEditing ? "Atualizar" : "Salvar"}
       </Button>
     </form>
   );
 }
-

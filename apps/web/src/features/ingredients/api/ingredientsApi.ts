@@ -24,9 +24,15 @@ export function createIngredient(values: IngredientFormValues) {
   });
 }
 
+export function updateIngredient(id: string, values: IngredientFormValues) {
+  return apiFetch<Ingredient>(`/ingredients/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(normalizeIngredientPayload(values)),
+  });
+}
+
 export function deleteIngredient(id: string) {
   return apiFetch<{ deleted: true }>(`/ingredients/${id}`, {
     method: "DELETE",
   });
 }
-

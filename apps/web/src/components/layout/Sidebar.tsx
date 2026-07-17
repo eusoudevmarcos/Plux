@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, Boxes, ChefHat, PlusCircle } from "lucide-react";
+import { BarChart3, Boxes, ChefHat, FileText, PackageOpen, PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./layout.module.css";
@@ -8,7 +8,9 @@ import styles from "./layout.module.css";
 const items = [
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { href: "/ingredientes", label: "Ingredientes", icon: Boxes },
+  { href: "/produtos", label: "Produtos", icon: PackageOpen },
   { href: "/produtos/novo", label: "Novo produto", icon: PlusCircle },
+  { href: "/fiscal", label: "Fiscal", icon: FileText },
 ];
 
 export function Sidebar() {
@@ -37,4 +39,3 @@ export function Sidebar() {
     </aside>
   );
 }
-

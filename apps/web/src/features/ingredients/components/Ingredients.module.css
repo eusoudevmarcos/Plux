@@ -44,9 +44,23 @@
   gap: 16px;
 }
 
+.cardHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
 .cardHeader h3 {
   font-size: 18px;
   margin: 0;
+}
+
+.cardHeader span {
+  color: var(--muted);
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  margin-top: 3px;
 }
 
 .twoCols {
@@ -155,4 +169,3 @@
     grid-template-columns: 1fr;
   }
 }
-

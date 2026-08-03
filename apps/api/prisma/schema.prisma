@@ -32,7 +32,7 @@ enum FiscalStrategy {
 
 enum UserRole {
   AURA_ADMIN
-  CLIENT
+  COMPANY_ADMIN
 }
 
 enum AuraCustomerStatus {
@@ -106,7 +106,7 @@ model User {
   id            String        @id @default(cuid())
   name          String
   email         String        @unique
-  role          UserRole      @default(CLIENT)
+  role          UserRole      @default(COMPANY_ADMIN)
   passwordHash  String
   passwordSalt  String
   createdAt     DateTime      @default(now())

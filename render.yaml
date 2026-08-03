@@ -19,6 +19,8 @@ services:
           property: connectionString
       - key: CORS_ORIGIN
         sync: false
+      - key: AURA_ADMIN_EMAILS
+        sync: false
 
 databases:
   - name: pluxsales-postgres

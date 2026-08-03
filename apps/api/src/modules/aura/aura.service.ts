@@ -99,7 +99,7 @@ export async function createCustomer(input: AuraCustomerCreateInput) {
     data: {
       name: input.name,
       email: input.email,
-      role: "CLIENT",
+      role: "COMPANY_ADMIN",
       ...credentials,
       customerAccount: {
         create: {

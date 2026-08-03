@@ -2,7 +2,7 @@ export type AuthUser = {
   id: string;
   name: string;
   email: string;
-  role: "AURA_ADMIN" | "CLIENT";
+  role: "AURA_ADMIN" | "COMPANY_ADMIN";
   hasPlatformAccess: boolean;
   customerAccount?: {
     id: string;

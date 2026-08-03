@@ -76,11 +76,7 @@ async function resolveUserRole(email: string): Promise<UserRole> {
     return "AURA_ADMIN";
   }
 
-  const adminCount = await prisma.user.count({
-    where: { role: "AURA_ADMIN" },
-  });
-
-  return adminCount === 0 ? "AURA_ADMIN" : "CLIENT";
+  return "COMPANY_ADMIN";
 }
 
 async function createSession(userId: string) {
@@ -115,7 +111,7 @@ export async function register(input: RegisterInput) {
       role,
       passwordHash,
       passwordSalt,
-      ...(role === "CLIENT"
+      ...(role === "COMPANY_ADMIN"
         ? {
             customerAccount: {
               create: {

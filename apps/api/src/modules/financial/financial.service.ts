@@ -38,10 +38,24 @@ function buildProductRow(product: ProductWithIngredients) {
   };
 }
 
-export async function getProductFinancialReport() {
+export async function getProductFinancialReport(options: { storeId?: string | null } = {}) {
+  const store = options.storeId
+    ? await prisma.store.findUnique({
+        where: { id: options.storeId },
+      })
+    : null;
+
   const [companyProfile, products] = await Promise.all([
     prisma.companyProfile.findUnique({ where: { id: "main" } }),
     prisma.product.findMany({
+      where: store
+        ? {
+            OR: [{ storeId: store.id }, { storeId: null }],
+            taxProfile: {
+              taxRegime: store.taxRegime,
+            },
+          }
+        : undefined,
       include: { ingredients: true },
       orderBy: [{ active: "desc" }, { category: "asc" }, { name: "asc" }],
     }),
@@ -98,6 +112,7 @@ export async function getProductFinancialReport() {
 
   return {
     companyProfile,
+    store,
     summary: {
       productsCount: rows.length,
       activeProductsCount: activeRows.length,

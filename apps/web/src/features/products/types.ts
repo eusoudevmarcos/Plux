@@ -5,6 +5,7 @@ export type FiscalStrategy = "COMBINED_FOOD_SERVICE" | "SPLIT_INGREDIENTS_PREPAR
 
 export type Product = {
   id: string;
+  storeId?: string | null;
   name: string;
   sku: string;
   category: string;
@@ -66,4 +67,3 @@ export type ProductCreateResponse = {
   };
   product: Product;
 };
-

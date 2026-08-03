@@ -1,10 +1,14 @@
 import { apiFetch } from "@/lib/api";
+import { getActiveStoreId } from "@/features/stores/activeStore";
 import type { Product, ProductCreateResponse } from "../types";
 import type { ProductWizardValues } from "../schemas/product.schema";
 
 function normalizeProductPayload(values: ProductWizardValues) {
+  const storeId = getActiveStoreId();
+
   return {
     ...values,
+    storeId,
     fiscal: {
       ...values.fiscal,
       taxClassificationId: values.fiscal.taxClassificationId || null,
@@ -15,7 +19,10 @@ function normalizeProductPayload(values: ProductWizardValues) {
 }
 
 export function getProducts() {
-  return apiFetch<Product[]>("/products");
+  const storeId = getActiveStoreId();
+  const query = storeId ? `?storeId=${encodeURIComponent(storeId)}` : "";
+
+  return apiFetch<Product[]>(`/products${query}`);
 }
 
 export function updateProductActive(id: string, active: boolean) {

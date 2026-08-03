@@ -66,6 +66,52 @@ model CompanyProfile {
   updatedAt   DateTime  @updatedAt
 }
 
+model User {
+  id            String        @id @default(cuid())
+  name          String
+  email         String        @unique
+  passwordHash  String
+  passwordSalt  String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  sessions      AuthSession[]
+  stores        Store[]
+}
+
+model AuthSession {
+  id          String   @id @default(cuid())
+  tokenHash   String   @unique
+  userId      String
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Store {
+  id                 String    @id @default(cuid())
+  ownerId            String
+  legalName          String
+  tradeName          String
+  document           String?   @unique
+  taxRegime          TaxRegime @default(SIMPLES)
+  state              String    @default("DF")
+  city               String
+  district           String
+  addressLine        String
+  addressNumber      String
+  addressComplement  String?
+  zipCode            String?
+  active             Boolean   @default(true)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  owner              User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  products           Product[]
+
+  @@index([ownerId])
+}
+
 model Ingredient {
   id                  String             @id @default(cuid())
   name                String             @unique
@@ -89,8 +135,9 @@ model Ingredient {
 
 model Product {
   id                 String          @id @default(cuid())
+  storeId            String?
   name               String
-  sku                String          @unique
+  sku                String
   category           String
   salePrice          Decimal         @db.Decimal(12, 2)
   active             Boolean         @default(true)
@@ -98,8 +145,12 @@ model Product {
   fiscalStrategy     FiscalStrategy  @default(SPLIT_INGREDIENTS_PREPARATION_FEE)
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
+  store              Store?          @relation(fields: [storeId], references: [id], onDelete: SetNull)
   ingredients        ProductIngredient[]
   taxProfile         ProductTaxProfile?
+
+  @@index([storeId])
+  @@unique([storeId, sku])
 }
 
 model ProductIngredient {

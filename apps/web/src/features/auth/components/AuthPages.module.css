@@ -1,0 +1,76 @@
+.authPage {
+  align-items: center;
+  background:
+    linear-gradient(120deg, rgba(31, 47, 44, 0.94), rgba(15, 118, 110, 0.74)),
+    url("https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=1800&q=80");
+  background-position: center;
+  background-size: cover;
+  display: grid;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.authCard {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2);
+  display: grid;
+  gap: 20px;
+  justify-self: center;
+  max-width: 440px;
+  padding: 28px;
+  width: 100%;
+}
+
+.brand {
+  display: grid;
+  gap: 7px;
+}
+
+.brand span {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.brand h1 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.brand p {
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+}
+
+.actions {
+  display: grid;
+  gap: 12px;
+}
+
+.linkLine {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+  text-align: center;
+}
+
+.linkLine a {
+  color: var(--accent);
+  font-weight: 900;
+}
+
+.alert {
+  background: #fde8e5;
+  border-radius: 8px;
+  color: var(--danger);
+  font-weight: 800;
+  padding: 12px;
+}

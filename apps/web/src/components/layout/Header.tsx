@@ -4,20 +4,26 @@ import { useEffect, useState } from "react";
 import { getCompanyProfile } from "@/features/company/api/companyApi";
 import type { CompanyProfile } from "@/features/company/types";
 import { taxRegimeLabels } from "@/features/company/types";
+import { getActiveStore } from "@/features/stores/activeStore";
+import type { Store } from "@/features/stores/types";
 import styles from "./layout.module.css";
 
 export function Header() {
   const [companyProfile, setCompanyProfile] = useState<CompanyProfile | null>(null);
+  const [activeStore, setActiveStoreState] = useState<Store | null>(null);
 
   useEffect(() => {
+    setActiveStoreState(getActiveStore());
     getCompanyProfile()
       .then(setCompanyProfile)
       .catch(() => setCompanyProfile(null));
   }, []);
 
-  const status = companyProfile
-    ? `${companyProfile.uf} · ${taxRegimeLabels[companyProfile.taxRegime]} · IBS/CBS 2026`
-    : "Regime tributario pendente";
+  const status = activeStore
+    ? `${activeStore.tradeName} - ${activeStore.state} - ${taxRegimeLabels[activeStore.taxRegime]}`
+    : companyProfile
+      ? `${companyProfile.uf} - ${taxRegimeLabels[companyProfile.taxRegime]} - IBS/CBS 2026`
+      : "Regime tributario pendente";
 
   return (
     <header className={styles.header}>

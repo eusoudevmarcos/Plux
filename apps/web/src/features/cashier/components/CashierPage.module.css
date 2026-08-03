@@ -1,0 +1,126 @@
+.page {
+  display: grid;
+  gap: 22px;
+}
+
+.titleRow {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.kicker {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.titleRow h2 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.storeCard {
+  align-items: center;
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.storeCard h3 {
+  font-size: 22px;
+  margin: 0 0 6px;
+}
+
+.storeCard p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.regime {
+  background: var(--accent-soft);
+  border: 1px solid #bdddd6;
+  border-radius: 999px;
+  color: var(--accent-strong);
+  font-weight: 900;
+  padding: 9px 13px;
+  white-space: nowrap;
+}
+
+.productGrid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.productCard {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+}
+
+.productCard h3 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.productCard span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.price {
+  font-size: 26px;
+  font-weight: 900;
+}
+
+.fiscalLine {
+  background: var(--surface-strong);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  padding: 10px;
+}
+
+.alert,
+.empty {
+  border-radius: 8px;
+  font-weight: 800;
+  padding: 12px;
+}
+
+.alert {
+  background: #fde8e5;
+  color: var(--danger);
+}
+
+.empty {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+@media (max-width: 1100px) {
+  .productGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .titleRow,
+  .storeCard {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .productGrid {
+    grid-template-columns: 1fr;
+  }
+}

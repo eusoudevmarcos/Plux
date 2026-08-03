@@ -119,8 +119,22 @@ function buildSplitSimulation(input: {
   };
 }
 
-export async function listProducts() {
+export async function listProducts(options: { storeId?: string | null } = {}) {
+  const store = options.storeId
+    ? await prisma.store.findUnique({
+        where: { id: options.storeId },
+      })
+    : null;
+
   return prisma.product.findMany({
+    where: store
+      ? {
+          OR: [{ storeId: store.id }, { storeId: null }],
+          taxProfile: {
+            taxRegime: store.taxRegime,
+          },
+        }
+      : undefined,
     include: {
       ingredients: {
         include: {
@@ -136,7 +150,7 @@ export async function listProducts() {
         },
       },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ storeId: "desc" }, { createdAt: "desc" }],
   });
 }
 
@@ -197,6 +211,16 @@ export async function createProductFull(input: ProductCreateFullInput) {
   }
 
   return prisma.$transaction(async (tx) => {
+    const store = input.storeId
+      ? await tx.store.findUnique({
+          where: { id: input.storeId },
+        })
+      : null;
+
+    if (input.storeId && !store) {
+      throw new Error("Loja informada nao existe.");
+    }
+
     const ingredientIds = input.composition.map((item) => item.ingredientId);
     const ingredients = await tx.ingredient.findMany({
       where: { id: { in: ingredientIds } },
@@ -247,6 +271,7 @@ export async function createProductFull(input: ProductCreateFullInput) {
 
     const product = await tx.product.create({
       data: {
+        storeId: store?.id ?? null,
         name: input.name,
         sku: input.sku,
         category: input.category,
@@ -265,7 +290,7 @@ export async function createProductFull(input: ProductCreateFullInput) {
         taxProfile: {
           create: {
             uf: input.fiscal.uf,
-            taxRegime: input.fiscal.taxRegime,
+            taxRegime: store?.taxRegime ?? input.fiscal.taxRegime,
             ncm: input.fiscal.ncm,
             csosn: input.fiscal.csosn,
             pisCst: input.fiscal.pisCst,

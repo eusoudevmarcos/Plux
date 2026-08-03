@@ -26,6 +26,7 @@ export const productFiscalSchema = z.object({
 });
 
 export const productCreateFullSchema = z.object({
+  storeId: z.string().optional().nullable(),
   name: z.string().min(2, "Informe o nome do produto."),
   sku: z.string().min(3, "Informe um SKU."),
   category: z.string().min(2, "Informe a categoria."),

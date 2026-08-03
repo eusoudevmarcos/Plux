@@ -7,6 +7,8 @@
 .sidebar {
   background: #1f2f2c;
   color: #f7faf8;
+  display: flex;
+  flex-direction: column;
   padding: 24px 18px;
 }
 
@@ -36,6 +38,27 @@
 }
 
 .activeNavItem {
+  background: #2f514b;
+  color: #ffffff;
+}
+
+.logoutButton {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: #dbe7e2;
+  cursor: pointer;
+  display: flex;
+  font-weight: 800;
+  gap: 10px;
+  min-height: 42px;
+  margin-top: auto;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.logoutButton:hover {
   background: #2f514b;
   color: #ffffff;
 }
@@ -96,6 +119,7 @@
   .sidebar {
     align-items: center;
     display: flex;
+    flex-direction: row;
     gap: 16px;
     overflow-x: auto;
     padding: 14px 16px;
@@ -108,6 +132,11 @@
 
   .nav {
     display: flex;
+  }
+
+  .logoutButton {
+    margin-top: 0;
+    white-space: nowrap;
   }
 
   .navItem,
@@ -126,4 +155,3 @@
     padding: 20px;
   }
 }
-

@@ -1,10 +1,13 @@
 import cors from "@fastify/cors";
 import type { FastifyCorsOptions } from "@fastify/cors";
 import Fastify from "fastify";
+import { authRoutes } from "./modules/auth/auth.routes.js";
 import { companyRoutes } from "./modules/company/company.routes.js";
 import { financialRoutes } from "./modules/financial/financial.routes.js";
 import { ingredientsRoutes } from "./modules/ingredients/ingredients.routes.js";
 import { productsRoutes } from "./modules/products/products.routes.js";
+import { storesRoutes } from "./modules/stores/stores.routes.js";
+import { taxAssistantRoutes } from "./modules/tax-assistant/tax-assistant.routes.js";
 import { taxClassificationsRoutes } from "./modules/tax/tax-classifications.routes.js";
 
 function wildcardToRegExp(pattern: string) {
@@ -60,10 +63,13 @@ export async function buildApp() {
     };
   });
 
+  await app.register(authRoutes, { prefix: "/auth" });
   await app.register(companyRoutes, { prefix: "/company-profile" });
   await app.register(financialRoutes, { prefix: "/financial" });
   await app.register(ingredientsRoutes, { prefix: "/ingredients" });
   await app.register(productsRoutes, { prefix: "/products" });
+  await app.register(storesRoutes, { prefix: "/stores" });
+  await app.register(taxAssistantRoutes, { prefix: "/tax-assistant" });
   await app.register(taxClassificationsRoutes, { prefix: "/tax-classifications" });
 
   app.setErrorHandler((error, _request, reply) => {

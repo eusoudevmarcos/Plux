@@ -1,13 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Save, X } from "lucide-react";
+import { Save, Sparkles, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import type { TaxClassification } from "@/features/tax/types";
+import { suggestIngredientTax } from "@/features/taxAssistant/api/taxAssistantApi";
 import { createIngredient, updateIngredient } from "../api/ingredientsApi";
 import { ingredientFormSchema, type IngredientFormValues } from "../schemas/ingredient.schema";
 import type { Ingredient } from "../types";
@@ -95,6 +96,33 @@ export function IngredientForm({
     }
   }
 
+  async function handleSuggestTax() {
+    const name = form.getValues("name");
+
+    if (!name || name.length < 2) {
+      setError("Informe o nome do ingrediente para sugerir a classificacao.");
+      return;
+    }
+
+    setMessage(null);
+    setError(null);
+
+    try {
+      const suggestion = await suggestIngredientTax(name);
+      form.setValue("ncm", suggestion.ncm);
+      form.setValue("pisCst", suggestion.pisCst);
+      form.setValue("cofinsCst", suggestion.cofinsCst);
+      form.setValue("icmsCst", suggestion.icmsCst ?? "");
+      form.setValue("icmsCsosn", suggestion.icmsCsosn ?? "");
+      form.setValue("taxConfidence", suggestion.taxConfidence);
+      form.setValue("taxClassificationId", suggestion.taxClassificationId ?? "");
+      form.setValue("taxNotes", suggestion.taxNotes);
+      setMessage(`Sugestao aplicada: ${suggestion.matchedRule}.`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao sugerir classificacao.");
+    }
+  }
+
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className={styles.form}>
       <div className={styles.cardHeader}>
@@ -102,6 +130,10 @@ export function IngredientForm({
           <h3>{isEditing ? "Editar ingrediente" : "Novo ingrediente"}</h3>
           {isEditing ? <span>{ingredient?.name}</span> : null}
         </div>
+        <Button type="button" variant="secondary" onClick={handleSuggestTax} title="Sugerir classificacao fiscal">
+          <Sparkles size={16} aria-hidden />
+          Sugerir fiscal
+        </Button>
         {isEditing ? (
           <Button type="button" variant="ghost" onClick={onCancelEdit} title="Cancelar edição">
             <X size={16} aria-hidden />

@@ -1,4 +1,5 @@
 import type { CompanyProfile } from "@/features/company/types";
+import type { Store } from "@/features/stores/types";
 
 export type ProductFinancialRow = {
   productId: string;
@@ -29,6 +30,7 @@ export type ProductFinancialCategory = {
 
 export type ProductFinancialReport = {
   companyProfile: CompanyProfile | null;
+  store?: Store | null;
   summary: {
     productsCount: number;
     activeProductsCount: number;

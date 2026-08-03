@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronLeft, ChevronRight, Plus, Save, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Save, Sparkles, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
@@ -11,8 +11,10 @@ import { Select } from "@/components/ui/Select";
 import { getCompanyProfile } from "@/features/company/api/companyApi";
 import { getIngredients } from "@/features/ingredients/api/ingredientsApi";
 import type { Ingredient } from "@/features/ingredients/types";
+import { getActiveStore } from "@/features/stores/activeStore";
 import { getTaxClassifications } from "@/features/tax/api/taxApi";
 import type { TaxClassification } from "@/features/tax/types";
+import { suggestProductTax } from "@/features/taxAssistant/api/taxAssistantApi";
 import { formatMoney, formatPercent } from "@/lib/utils/money";
 import { createFullProduct } from "../api/productsApi";
 import { productWizardSchema, type ProductWizardValues } from "../schemas/product.schema";
@@ -93,12 +95,17 @@ export function ProductWizard() {
   const watchedFeeClassId = form.watch("fiscal.preparationFeeTaxClassificationId");
 
   useEffect(() => {
+    const activeStore = getActiveStore();
+
     Promise.all([getIngredients(), getTaxClassifications(), getCompanyProfile()])
       .then(([ingredientData, taxData, companyProfile]) => {
         setIngredients(ingredientData);
         setTaxClassifications(taxData);
 
-        if (companyProfile) {
+        if (activeStore) {
+          form.setValue("fiscal.uf", activeStore.state);
+          form.setValue("fiscal.taxRegime", activeStore.taxRegime);
+        } else if (companyProfile) {
           form.setValue("fiscal.uf", companyProfile.uf);
           form.setValue("fiscal.taxRegime", companyProfile.taxRegime);
         }
@@ -191,6 +198,32 @@ export function ProductWizard() {
       setStep(0);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao criar produto.");
+    }
+  }
+
+  async function handleSuggestProductTax() {
+    setMessage(null);
+    setError(null);
+
+    try {
+      const compositionNames =
+        watchedComposition
+          ?.map((item) => ingredientById.get(item.ingredientId)?.name)
+          .filter((name): name is string => Boolean(name)) ?? [];
+      const suggestion = await suggestProductTax({
+        name: form.getValues("name") || "Produto composto",
+        category: form.getValues("category"),
+        ingredientNames: compositionNames,
+      });
+
+      form.setValue("fiscal.ncm", suggestion.ncm);
+      form.setValue("fiscal.pisCst", suggestion.pisCst);
+      form.setValue("fiscal.cofinsCst", suggestion.cofinsCst);
+      form.setValue("fiscal.taxClassificationId", suggestion.taxClassificationId ?? "");
+      form.setValue("fiscal.legalBasis", suggestion.taxNotes);
+      setMessage(`Sugestao aplicada: ${suggestion.matchedRule}.`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao sugerir classificacao.");
     }
   }
 
@@ -292,7 +325,16 @@ export function ProductWizard() {
             ) : null}
 
             {step === 2 ? (
-              <FiscalFields form={form} taxClassifications={taxClassifications} />
+              <>
+                <div className={styles.compositionHeader}>
+                  <h3>Perfil fiscal</h3>
+                  <Button type="button" variant="secondary" onClick={handleSuggestProductTax}>
+                    <Sparkles size={16} aria-hidden />
+                    Sugerir produto
+                  </Button>
+                </div>
+                <FiscalFields form={form} taxClassifications={taxClassifications} />
+              </>
             ) : null}
 
             {message ? <div className={styles.success}>{message}</div> : null}

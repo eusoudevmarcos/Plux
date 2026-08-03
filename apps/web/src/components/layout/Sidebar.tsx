@@ -1,11 +1,27 @@
 "use client";
 
-import { BarChart3, Boxes, Building2, ChefHat, CircleDollarSign, FileText, PackageOpen, PlusCircle } from "lucide-react";
+import {
+  BarChart3,
+  Boxes,
+  Building2,
+  ChefHat,
+  CircleDollarSign,
+  FileText,
+  LogOut,
+  PackageOpen,
+  PlusCircle,
+  Store,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { clearAuthSession } from "@/features/auth/authStorage";
+import { logout } from "@/features/auth/api/authApi";
 import styles from "./layout.module.css";
 
 const items = [
+  { href: "/lojas", label: "Lojas", icon: Building2 },
+  { href: "/caixa", label: "Caixa", icon: Store },
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { href: "/ingredientes", label: "Ingredientes", icon: Boxes },
   { href: "/produtos", label: "Produtos", icon: PackageOpen },
@@ -17,6 +33,13 @@ const items = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    await logout().catch(() => null);
+    clearAuthSession();
+    router.replace("/login");
+  }
 
   return (
     <aside className={styles.sidebar}>
@@ -38,6 +61,10 @@ export function Sidebar() {
           );
         })}
       </nav>
+      <button type="button" className={styles.logoutButton} onClick={handleLogout}>
+        <LogOut size={18} aria-hidden />
+        <span>Sair</span>
+      </button>
     </aside>
   );
 }

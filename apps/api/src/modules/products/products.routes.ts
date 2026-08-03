@@ -4,8 +4,9 @@ import { createProductFull, getProductById, listProducts, updateProductActive } 
 import { productActiveUpdateSchema, productCreateFullSchema } from "./products.schema.js";
 
 export async function productsRoutes(app: FastifyInstance) {
-  app.get("/", async () => {
-    return listProducts();
+  app.get("/", async (request) => {
+    const { storeId } = request.query as { storeId?: string };
+    return listProducts({ storeId });
   });
 
   app.get("/:id", async (request, reply) => {

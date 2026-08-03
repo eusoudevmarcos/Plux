@@ -317,5 +317,5 @@ export async function createProductFull(input: ProductCreateFullInput) {
       taxSimulation,
       product,
     };
-  });
+  }, { maxWait: 15000, timeout: 30000 });
 }

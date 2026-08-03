@@ -101,6 +101,8 @@ Framework Preset: Next.js
 Root Directory: apps/web
 ```
 
+Esse ponto é obrigatório. Se a Vercel usar `apps/api` como Root Directory, ela vai tentar buildar o Fastify em vez do frontend Next.js.
+
 O arquivo `apps/web/vercel.json` já define:
 
 ```text

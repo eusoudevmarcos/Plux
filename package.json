@@ -13,7 +13,7 @@
     "db:status": "pnpm --filter @pluxsales/api prisma:migrate:status",
     "db:resolve:init": "pnpm --filter @pluxsales/api prisma:migrate:resolve:init",
     "db:seed": "pnpm --filter @pluxsales/api prisma:seed",
-    "render:build": "pnpm --filter @pluxsales/api prisma:generate && pnpm --filter @pluxsales/api build",
+    "render:build": "pnpm --filter @pluxsales/api build",
     "render:start": "pnpm --filter @pluxsales/api start",
     "vercel:build": "pnpm --filter @pluxsales/web build"
   },

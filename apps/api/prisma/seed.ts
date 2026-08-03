@@ -216,6 +216,20 @@ const productSeed = [
 ] as const;
 
 async function main() {
+  await prisma.companyProfile.upsert({
+    where: { id: "main" },
+    update: {},
+    create: {
+      id: "main",
+      legalName: "Empresa modelo PluxSales",
+      tradeName: "PluxSales Food Service",
+      document: null,
+      taxRegime: "SIMPLES",
+      uf: "DF",
+      city: "Brasilia",
+    },
+  });
+
   for (const taxClassification of taxClassificationSeed) {
     await prisma.taxClassification.upsert({
       where: { cClassTrib: taxClassification.cClassTrib },
@@ -328,4 +342,3 @@ main()
     await prisma.$disconnect();
     process.exit(1);
   });
-

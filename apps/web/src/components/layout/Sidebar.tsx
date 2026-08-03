@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, Boxes, ChefHat, FileText, PackageOpen, PlusCircle } from "lucide-react";
+import { BarChart3, Boxes, Building2, ChefHat, CircleDollarSign, FileText, PackageOpen, PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./layout.module.css";
@@ -10,6 +10,8 @@ const items = [
   { href: "/ingredientes", label: "Ingredientes", icon: Boxes },
   { href: "/produtos", label: "Produtos", icon: PackageOpen },
   { href: "/produtos/novo", label: "Novo produto", icon: PlusCircle },
+  { href: "/financeiro", label: "Financeiro", icon: CircleDollarSign },
+  { href: "/empresa", label: "Empresa", icon: Building2 },
   { href: "/fiscal", label: "Fiscal", icon: FileText },
 ];
 

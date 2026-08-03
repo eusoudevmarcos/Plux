@@ -54,6 +54,18 @@ model TaxClassification {
   preparationFeeTaxProfiles       ProductTaxProfile[] @relation("PreparationFeeTaxClassification")
 }
 
+model CompanyProfile {
+  id          String    @id @default("main")
+  legalName   String
+  tradeName   String?
+  document    String?   @unique
+  taxRegime   TaxRegime @default(SIMPLES)
+  uf          String    @default("DF")
+  city        String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
 model Ingredient {
   id                  String             @id @default(cuid())
   name                String             @unique
@@ -128,4 +140,3 @@ model ProductTaxProfile {
   taxClassification                  TaxClassification? @relation("ProductTaxClassification", fields: [taxClassificationId], references: [id])
   preparationFeeTaxClassification    TaxClassification? @relation("PreparationFeeTaxClassification", fields: [preparationFeeTaxClassificationId], references: [id])
 }
-

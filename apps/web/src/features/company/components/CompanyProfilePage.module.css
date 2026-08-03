@@ -1,0 +1,128 @@
+.page {
+  display: grid;
+  gap: 22px;
+}
+
+.titleRow {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.kicker {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.titleRow h2 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.badge {
+  align-items: center;
+  background: var(--accent-soft);
+  border: 1px solid #bdddd6;
+  border-radius: 999px;
+  color: var(--accent-strong);
+  display: inline-flex;
+  font-weight: 900;
+  gap: 8px;
+  padding: 9px 13px;
+  white-space: nowrap;
+}
+
+.grid {
+  align-items: start;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) 320px;
+}
+
+.formCard {
+  padding: 22px;
+}
+
+.form {
+  display: grid;
+  gap: 18px;
+}
+
+.twoCols {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sidePanel {
+  display: grid;
+  gap: 16px;
+}
+
+.regimeCard,
+.noteCard {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+}
+
+.regimeCard span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.regimeCard strong {
+  font-size: 24px;
+}
+
+.noteCard h3 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.noteCard p {
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.alert,
+.success {
+  border-radius: 8px;
+  font-weight: 800;
+  padding: 12px;
+}
+
+.alert {
+  background: #fde8e5;
+  color: var(--danger);
+}
+
+.success {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+@media (max-width: 980px) {
+  .grid,
+  .twoCols {
+    grid-template-columns: 1fr;
+  }
+
+  .titleRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

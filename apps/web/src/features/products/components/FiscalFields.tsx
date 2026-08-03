@@ -19,7 +19,7 @@ export function FiscalFields({
       <div className={styles.twoCols}>
         <Input label="UF" error={form.formState.errors.fiscal?.uf?.message} {...form.register("fiscal.uf")} />
         <Select label="Regime" {...form.register("fiscal.taxRegime")}>
-          <option value="SIMPLES">Simples</option>
+          <option value="SIMPLES">Simples Nacional</option>
           <option value="LUCRO_PRESUMIDO">Lucro presumido</option>
           <option value="LUCRO_REAL">Lucro real</option>
         </Select>
@@ -66,4 +66,3 @@ export function FiscalFields({
     </div>
   );
 }
-

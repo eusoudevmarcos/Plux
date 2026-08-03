@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { getCompanyProfile } from "@/features/company/api/companyApi";
 import { getIngredients } from "@/features/ingredients/api/ingredientsApi";
 import type { Ingredient } from "@/features/ingredients/types";
 import { getTaxClassifications } from "@/features/tax/api/taxApi";
@@ -92,10 +93,15 @@ export function ProductWizard() {
   const watchedFeeClassId = form.watch("fiscal.preparationFeeTaxClassificationId");
 
   useEffect(() => {
-    Promise.all([getIngredients(), getTaxClassifications()])
-      .then(([ingredientData, taxData]) => {
+    Promise.all([getIngredients(), getTaxClassifications(), getCompanyProfile()])
+      .then(([ingredientData, taxData, companyProfile]) => {
         setIngredients(ingredientData);
         setTaxClassifications(taxData);
+
+        if (companyProfile) {
+          form.setValue("fiscal.uf", companyProfile.uf);
+          form.setValue("fiscal.taxRegime", companyProfile.taxRegime);
+        }
 
         const bars = taxData.find((item) => item.cClassTrib === "200047");
         const integral = taxData.find((item) => item.cClassTrib === "000001");
@@ -359,4 +365,3 @@ export function ProductWizard() {
     </section>
   );
 }
-

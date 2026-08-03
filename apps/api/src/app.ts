@@ -1,6 +1,8 @@
 import cors from "@fastify/cors";
 import type { FastifyCorsOptions } from "@fastify/cors";
 import Fastify from "fastify";
+import { companyRoutes } from "./modules/company/company.routes.js";
+import { financialRoutes } from "./modules/financial/financial.routes.js";
 import { ingredientsRoutes } from "./modules/ingredients/ingredients.routes.js";
 import { productsRoutes } from "./modules/products/products.routes.js";
 import { taxClassificationsRoutes } from "./modules/tax/tax-classifications.routes.js";
@@ -58,6 +60,8 @@ export async function buildApp() {
     };
   });
 
+  await app.register(companyRoutes, { prefix: "/company-profile" });
+  await app.register(financialRoutes, { prefix: "/financial" });
   await app.register(ingredientsRoutes, { prefix: "/ingredients" });
   await app.register(productsRoutes, { prefix: "/products" });
   await app.register(taxClassificationsRoutes, { prefix: "/tax-classifications" });

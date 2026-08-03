@@ -1,5 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { formatZodError, parseId } from "../../lib/http.js";
+import { requirePlatformAccess } from "../auth/auth.service.js";
 import {
   createIngredient,
   deleteIngredient,
@@ -9,12 +10,18 @@ import {
 import { ingredientCreateSchema, ingredientUpdateSchema } from "./ingredients.schema.js";
 
 export async function ingredientsRoutes(app: FastifyInstance) {
-  app.get("/", async () => {
-    return listIngredients();
+  app.get("/", async (request, reply) => {
+    try {
+      await requirePlatformAccess(request);
+      return listIngredients();
+    } catch (error) {
+      return reply.code(403).send({ message: error instanceof Error ? error.message : "Acesso bloqueado." });
+    }
   });
 
   app.post("/", async (request, reply) => {
     try {
+      await requirePlatformAccess(request);
       const input = ingredientCreateSchema.parse(request.body);
       return await createIngredient(input);
     } catch (error) {
@@ -24,6 +31,7 @@ export async function ingredientsRoutes(app: FastifyInstance) {
 
   app.patch("/:id", async (request, reply) => {
     try {
+      await requirePlatformAccess(request);
       const { id } = request.params as { id?: string };
       const input = ingredientUpdateSchema.parse(request.body);
       return await updateIngredient(parseId(id), input);
@@ -34,6 +42,7 @@ export async function ingredientsRoutes(app: FastifyInstance) {
 
   app.delete("/:id", async (request, reply) => {
     try {
+      await requirePlatformAccess(request);
       const { id } = request.params as { id?: string };
       return await deleteIngredient(parseId(id));
     } catch (error) {
@@ -41,4 +50,3 @@ export async function ingredientsRoutes(app: FastifyInstance) {
     }
   });
 }
-

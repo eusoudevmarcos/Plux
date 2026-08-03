@@ -2,6 +2,7 @@ import cors from "@fastify/cors";
 import type { FastifyCorsOptions } from "@fastify/cors";
 import Fastify from "fastify";
 import { authRoutes } from "./modules/auth/auth.routes.js";
+import { auraRoutes } from "./modules/aura/aura.routes.js";
 import { companyRoutes } from "./modules/company/company.routes.js";
 import { financialRoutes } from "./modules/financial/financial.routes.js";
 import { ingredientsRoutes } from "./modules/ingredients/ingredients.routes.js";
@@ -64,6 +65,7 @@ export async function buildApp() {
   });
 
   await app.register(authRoutes, { prefix: "/auth" });
+  await app.register(auraRoutes, { prefix: "/aura" });
   await app.register(companyRoutes, { prefix: "/company-profile" });
   await app.register(financialRoutes, { prefix: "/financial" });
   await app.register(ingredientsRoutes, { prefix: "/ingredients" });

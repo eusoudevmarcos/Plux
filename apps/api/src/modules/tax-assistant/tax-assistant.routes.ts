@@ -1,11 +1,13 @@
 import type { FastifyInstance } from "fastify";
 import { formatZodError } from "../../lib/http.js";
+import { requirePlatformAccess } from "../auth/auth.service.js";
 import { taxAssistantSuggestSchema } from "./tax-assistant.schema.js";
 import { suggestTax } from "./tax-assistant.service.js";
 
 export async function taxAssistantRoutes(app: FastifyInstance) {
   app.post("/suggest", async (request, reply) => {
     try {
+      await requirePlatformAccess(request);
       const input = taxAssistantSuggestSchema.parse(request.body);
       return await suggestTax(input);
     } catch (error) {

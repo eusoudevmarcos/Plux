@@ -2,12 +2,14 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getAuthToken } from "@/features/auth/authStorage";
+import { me } from "@/features/auth/api/authApi";
+import { clearAuthSession, getAuthToken, saveAuthUser } from "@/features/auth/authStorage";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import styles from "./layout.module.css";
 
 const publicPaths = ["/login", "/cadastro"];
+const accessPendingPath = "/assinatura";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -26,8 +28,32 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    setChecked(true);
-  }, [isPublic, router]);
+    me()
+      .then(({ user }) => {
+        saveAuthUser(user);
+
+        if (pathname.startsWith("/aura") && user.role !== "AURA_ADMIN") {
+          router.replace(user.hasPlatformAccess ? "/lojas" : accessPendingPath);
+          return;
+        }
+
+        if (user.role !== "AURA_ADMIN" && !user.hasPlatformAccess && pathname !== accessPendingPath) {
+          router.replace(accessPendingPath);
+          return;
+        }
+
+        if (user.hasPlatformAccess && pathname === accessPendingPath) {
+          router.replace("/lojas");
+          return;
+        }
+
+        setChecked(true);
+      })
+      .catch(() => {
+        clearAuthSession();
+        router.replace("/login");
+      });
+  }, [isPublic, pathname, router]);
 
   if (isPublic) {
     return <>{children}</>;

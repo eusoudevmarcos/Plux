@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api";
-import type { AuthResponse, LoginInput, RegisterInput } from "../types";
+import type { AuthResponse, LoginInput, MeResponse, RegisterInput } from "../types";
 
 export function login(values: LoginInput) {
   return apiFetch<AuthResponse>("/auth/login", {
@@ -19,4 +19,8 @@ export function logout() {
   return apiFetch<{ loggedOut: boolean }>("/auth/logout", {
     method: "POST",
   });
+}
+
+export function me() {
+  return apiFetch<MeResponse>("/auth/me");
 }

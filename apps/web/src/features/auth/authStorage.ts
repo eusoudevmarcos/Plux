@@ -8,6 +8,10 @@ export function saveAuthSession(session: AuthResponse) {
   window.localStorage.setItem(USER_KEY, JSON.stringify(session.user));
 }
 
+export function saveAuthUser(user: AuthUser) {
+  window.localStorage.setItem(USER_KEY, JSON.stringify(user));
+}
+
 export function getAuthToken() {
   if (typeof window === "undefined") {
     return null;
@@ -38,4 +42,5 @@ export function clearAuthSession() {
   window.localStorage.removeItem(TOKEN_KEY);
   window.localStorage.removeItem(USER_KEY);
   window.localStorage.removeItem("plux_active_store_id");
+  window.localStorage.removeItem("plux_active_store");
 }

@@ -92,6 +92,33 @@ const taxClassificationSeed = [
   },
 ];
 
+const auraPlanSeed = [
+  {
+    name: "Start",
+    description: "Plano inicial para uma loja com operacao fiscal e financeira essencial.",
+    monthlyPrice: 297,
+    setupFee: 0,
+    maxStores: 1,
+    features: "1 loja; produtos compostos; assistente fiscal; relatorios financeiros",
+  },
+  {
+    name: "Scale",
+    description: "Plano para redes pequenas com multiplas lojas e maior acompanhamento.",
+    monthlyPrice: 697,
+    setupFee: 990,
+    maxStores: 5,
+    features: "Ate 5 lojas; contratos; financeiro; auditoria fiscal; suporte prioritario",
+  },
+  {
+    name: "Enterprise",
+    description: "Plano consultivo para operacoes com defesa tributaria e regras customizadas.",
+    monthlyPrice: 1497,
+    setupFee: 2990,
+    maxStores: 25,
+    features: "Multi-loja; regras customizadas; acompanhamento consultivo; governanca fiscal",
+  },
+] as const;
+
 const ingredientSeed = [
   { name: "Pão brioche", unitMeasure: "un", unitCost: 1.8, stockCurrent: 100, ncm: "19059090", cClassTrib: "200003", pisCst: "06", cofinsCst: "06", taxNotes: "Classificação candidata. Validar se o item específico entra na cesta/alíquota zero ou se cai em alimento reduzido." },
   { name: "Massa de pizza", unitMeasure: "un", unitCost: 4.5, stockCurrent: 40, ncm: "19059090", cClassTrib: "200034", pisCst: "06", cofinsCst: "06", taxNotes: "Classificação candidata para alimento destinado ao consumo humano." },
@@ -229,6 +256,14 @@ async function main() {
       city: "Brasilia",
     },
   });
+
+  for (const plan of auraPlanSeed) {
+    await prisma.auraPlan.upsert({
+      where: { name: plan.name },
+      update: plan,
+      create: plan,
+    });
+  }
 
   for (const taxClassification of taxClassificationSeed) {
     await prisma.taxClassification.upsert({

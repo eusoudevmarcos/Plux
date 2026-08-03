@@ -1,0 +1,211 @@
+.page {
+  display: grid;
+  gap: 22px;
+}
+
+.titleRow {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.kicker {
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 900;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.titleRow h2 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.statsGrid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.statCard {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+}
+
+.statCard span,
+.miniLabel {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.statCard strong {
+  font-size: 24px;
+}
+
+.grid {
+  align-items: flex-start;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 420px minmax(0, 1fr);
+}
+
+.formCard,
+.customersCard {
+  padding: 20px;
+}
+
+.formCard {
+  display: grid;
+  gap: 18px;
+}
+
+.formCard h3,
+.customersCard h3 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+}
+
+.twoCols {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.textareaField {
+  display: grid;
+  gap: 7px;
+}
+
+.textareaField span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.textareaField textarea {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-height: 88px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.customerList {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.customerCard {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.customerHeader {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.customerHeader h4 {
+  font-size: 18px;
+  margin: 0 0 4px;
+}
+
+.customerHeader p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.statusPill {
+  background: var(--surface-strong);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 7px 10px;
+  white-space: nowrap;
+}
+
+.accessOn {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.accessOff {
+  background: #fde8e5;
+  color: var(--danger);
+}
+
+.customerActions {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.actionBox {
+  background: var(--surface-strong);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.alert,
+.success,
+.empty {
+  border-radius: 8px;
+  font-weight: 800;
+  padding: 12px;
+}
+
+.alert {
+  background: #fde8e5;
+  color: var(--danger);
+}
+
+.success {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.empty {
+  background: var(--surface-strong);
+  color: var(--muted);
+}
+
+@media (max-width: 1220px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid,
+  .customerActions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .titleRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .statsGrid,
+  .twoCols {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,51 @@
+.page {
+  display: grid;
+  gap: 22px;
+}
+
+.panel {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+}
+
+.panel h2 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.panel p {
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 760px;
+}
+
+.statusGrid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.statusCard {
+  display: grid;
+  gap: 7px;
+  padding: 16px;
+}
+
+.statusCard span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.statusCard strong {
+  font-size: 22px;
+}
+
+@media (max-width: 820px) {
+  .statusGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -15,7 +15,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { clearAuthSession } from "@/features/auth/authStorage";
+import { clearAuthSession, getAuthUser } from "@/features/auth/authStorage";
 import { logout } from "@/features/auth/api/authApi";
 import styles from "./layout.module.css";
 
@@ -34,6 +34,9 @@ const items = [
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const user = getAuthUser();
+  const visibleItems =
+    user?.role === "AURA_ADMIN" ? [{ href: "/aura", label: "Aura", icon: CircleDollarSign }, ...items] : items;
 
   async function handleLogout() {
     await logout().catch(() => null);
@@ -49,7 +52,7 @@ export function Sidebar() {
       </Link>
 
       <nav className={styles.nav}>
-        {items.map((item) => {
+        {visibleItems.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
 

@@ -26,7 +26,9 @@ export function RegisterPage() {
     try {
       const session = await register({ name, email, password });
       saveAuthSession(session);
-      router.replace("/lojas");
+      router.replace(
+        session.user.role === "AURA_ADMIN" ? "/aura" : session.user.hasPlatformAccess ? "/lojas" : "/assinatura",
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao cadastrar.");
     } finally {

@@ -97,7 +97,8 @@
 }
 
 .alert,
-.empty {
+.empty,
+.success {
   border-radius: 8px;
   font-weight: 800;
   padding: 12px;
@@ -108,18 +109,131 @@
   color: var(--danger);
 }
 
+.success {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
 .empty {
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--muted);
 }
 
+.sideStack {
+  display: grid;
+  gap: 16px;
+  position: sticky;
+  top: 18px;
+}
+
+.cashStatusCard,
 .cartCard {
   display: grid;
   gap: 16px;
   padding: 18px;
-  position: sticky;
-  top: 18px;
+}
+
+.cashStatusHeader {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.cashStatusHeader h3 {
+  font-size: 26px;
+  margin: 5px 0;
+}
+
+.cashStatusHeader p {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.statusLabel {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.openBadge,
+.closedBadge {
+  align-items: center;
+  border-radius: 12px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 42px;
+  justify-content: center;
+  width: 42px;
+}
+
+.openBadge {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.closedBadge {
+  background: #fde8e5;
+  color: var(--danger);
+}
+
+.cashMetrics {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cashMetrics div {
+  background: var(--surface-strong);
+  border-radius: 8px;
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+}
+
+.cashMetrics span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.cashMetrics strong {
+  font-size: 17px;
+}
+
+.openCashForm,
+.operationCard {
+  display: grid;
+  gap: 12px;
+}
+
+.operationCard,
+.historyCard {
+  padding: 18px;
+}
+
+.cardTitle {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.cardTitle h3 {
+  font-size: 17px;
+  margin: 0;
+}
+
+.cardTitle span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
 }
 
 .cartHeader {
@@ -210,6 +324,64 @@
   padding: 10px 12px;
 }
 
+.historyCard {
+  display: grid;
+  gap: 13px;
+}
+
+.historyList {
+  display: grid;
+  gap: 10px;
+}
+
+.historyItem {
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.historyItem:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.historyItem strong,
+.historyItem span {
+  display: block;
+}
+
+.historyItem strong {
+  font-size: 14px;
+}
+
+.historyItem span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  margin-top: 3px;
+}
+
+.historyItem b {
+  white-space: nowrap;
+}
+
+.miniEmpty {
+  background: var(--surface-strong);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  padding: 12px;
+}
+
+.divider {
+  background: var(--border);
+  height: 1px;
+}
+
 @media (max-width: 1100px) {
   .cashierGrid {
     grid-template-columns: 1fr;
@@ -219,7 +391,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .cartCard {
+  .sideStack {
     position: static;
   }
 }

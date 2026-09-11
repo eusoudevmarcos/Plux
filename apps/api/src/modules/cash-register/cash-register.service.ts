@@ -13,7 +13,7 @@ export async function getCurrentCashRegister(userId: string, storeId: string) {
   await assertStoreOwner(userId, storeId);
   return prisma.cashRegister.findFirst({
     where: { storeId, status: "OPEN" },
-    include: { movements: { orderBy: { createdAt: "desc" }, take: 20 }, sales: { orderBy: { createdAt: "desc" }, take: 20 } },
+    include: { movements: { orderBy: { createdAt: "desc" } }, sales: { orderBy: { createdAt: "desc" }, take: 20 } },
     orderBy: { openedAt: "desc" },
   });
 }
@@ -44,7 +44,7 @@ export async function openCashRegister(userId: string, input: CashRegisterOpenIn
         },
       },
     },
-    include: { movements: true },
+    include: { movements: { orderBy: { createdAt: "desc" } }, sales: { orderBy: { createdAt: "desc" }, take: 20 } },
   });
 }
 
@@ -102,6 +102,6 @@ export async function closeCashRegister(userId: string, cashRegisterId: string, 
         },
       },
     },
-    include: { movements: true },
+    include: { movements: { orderBy: { createdAt: "desc" } }, sales: { orderBy: { createdAt: "desc" }, take: 20 } },
   });
 }

@@ -49,6 +49,19 @@ Incluído:
 - API `/stock/movements` para auditoria de estoque;
 - tela `/caixa` com carrinho e finalização de venda real.
 
+## Bloco integrado em seguida
+
+Branch: `cash-register-ui-flow`.
+
+Incluído:
+
+- tela `/caixa` com abertura de caixa por loja ativa;
+- bloqueio de venda sem caixa aberto;
+- sangria e suprimento direto no PDV;
+- saldo esperado calculado por movimentos financeiros do caixa;
+- fechamento com saldo contado e diferença apurada;
+- listas operacionais de últimas vendas e movimentos.
+
 ## Próximos blocos recomendados
 
 1. Compras e fornecedores, com atualização de custo do ingrediente.

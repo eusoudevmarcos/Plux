@@ -121,11 +121,15 @@ export async function checkoutSale(userId: string, input: SaleCheckoutInput) {
       orderBy: { openedAt: "desc" },
     });
 
+    if (!openCashRegister) {
+      throw new Error("Abra o caixa desta loja antes de finalizar vendas.");
+    }
+
     const sale = await tx.sale.create({
       data: {
         storeId: input.storeId,
         userId,
-        cashRegisterId: openCashRegister?.id ?? null,
+        cashRegisterId: openCashRegister.id,
         number,
         customerName: input.customerName,
         status: "COMPLETED",
@@ -180,17 +184,15 @@ export async function checkoutSale(userId: string, input: SaleCheckoutInput) {
       });
     }
 
-    if (openCashRegister) {
-      await tx.cashMovement.create({
-        data: {
-          cashRegisterId: openCashRegister.id,
-          userId,
-          type: "VENDA",
-          amount: total,
-          description: `Venda #${sale.number}`,
-        },
-      });
-    }
+    await tx.cashMovement.create({
+      data: {
+        cashRegisterId: openCashRegister.id,
+        userId,
+        type: "VENDA",
+        amount: total,
+        description: `Venda #${sale.number}`,
+      },
+    });
 
     return sale;
   });

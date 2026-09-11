@@ -23,14 +23,16 @@ O cenário padrão do seed é `SPLIT_INGREDIENTS_PREPARATION_FEE`: a base da ven
 
 O caixa (`/caixa`) já lança venda real:
 
+- exige caixa aberto para finalizar venda;
+- abre caixa com saldo inicial;
 - monta carrinho por loja ativa;
 - finaliza venda em `POST /sales/checkout`;
 - cria venda, itens e pagamentos em uma única transação;
 - baixa automaticamente o estoque dos ingredientes da ficha técnica;
 - grava `StockMovement` auditável por ingrediente;
-- registra movimento de caixa quando existe caixa aberto.
-
-O backend também expõe abertura/fechamento de caixa e sangria/suprimento por `/cash-register`.
+- registra movimento de caixa para cada venda;
+- permite sangria e suprimento;
+- fecha caixa com saldo esperado, saldo contado e diferença apurada.
 
 ## Fonte da tabela IBS/CBS
 

@@ -1,6 +1,6 @@
 # PluxSales
 
-MVP web para food service com engenharia de cardápio, cadastro de ingredientes, produtos compostos, CMV e classificação fiscal por linha.
+MVP web para food service com engenharia de cardápio, cadastro de ingredientes, produtos compostos, CMV, PDV com baixa de estoque por ficha técnica e classificação fiscal por linha.
 
 ## Stack
 
@@ -18,6 +18,19 @@ O PluxSales separa o produto vendido em:
 3. Taxa de preparo fixa, por padrão R$ 5,00, com classificação própria.
 
 O cenário padrão do seed é `SPLIT_INGREDIENTS_PREPARATION_FEE`: a base da venda é simulada como ingredientes classificados individualmente + taxa técnica de preparo. O sistema marca o cenário como `requiresLegalReview`, porque a adoção em documento fiscal real precisa de validação de contador e jurídico.
+
+## Operação implantada
+
+O caixa (`/caixa`) já lança venda real:
+
+- monta carrinho por loja ativa;
+- finaliza venda em `POST /sales/checkout`;
+- cria venda, itens e pagamentos em uma única transação;
+- baixa automaticamente o estoque dos ingredientes da ficha técnica;
+- grava `StockMovement` auditável por ingrediente;
+- registra movimento de caixa quando existe caixa aberto.
+
+O backend também expõe abertura/fechamento de caixa e sangria/suprimento por `/cash-register`.
 
 ## Fonte da tabela IBS/CBS
 
@@ -123,6 +136,17 @@ GET    /products/:id
 PATCH  /products/:id/active
 POST   /products/create-full
 
+GET    /sales
+POST   /sales/checkout
+POST   /sales/:id/cancel
+
+GET    /cash-register/current
+POST   /cash-register/open
+POST   /cash-register/:id/movements
+POST   /cash-register/:id/close
+
+GET    /stock/movements
+
 GET    /tax-classifications
 ```
 
@@ -150,5 +174,7 @@ Use:
 - Regras estaduais de ICMS por UF.
 - Perfis fiscais aprovados com trilha de usuário, data e parecer.
 - Emissão fiscal em ambiente homologação.
-- Estoque com baixa automática por venda.
-- PDV com split fiscal por item.
+- Compras e fornecedores com custo médio ponderado.
+- Importação de XML de NF-e para entrada de ingredientes.
+- Relatórios gerenciais completos de vendas, CMV, estoque e DRE.
+- PDV com exibição detalhada do split fiscal por item na finalização.

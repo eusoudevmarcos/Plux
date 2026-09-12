@@ -8,9 +8,11 @@ import { companyRoutes } from "./modules/company/company.routes.js";
 import { financialRoutes } from "./modules/financial/financial.routes.js";
 import { ingredientsRoutes } from "./modules/ingredients/ingredients.routes.js";
 import { productsRoutes } from "./modules/products/products.routes.js";
+import { purchasesRoutes } from "./modules/purchases/purchases.routes.js";
 import { salesRoutes } from "./modules/sales/sales.routes.js";
 import { stockRoutes } from "./modules/stock/stock.routes.js";
 import { storesRoutes } from "./modules/stores/stores.routes.js";
+import { suppliersRoutes } from "./modules/suppliers/suppliers.routes.js";
 import { taxAssistantRoutes } from "./modules/tax-assistant/tax-assistant.routes.js";
 import { taxClassificationsRoutes } from "./modules/tax/tax-classifications.routes.js";
 
@@ -74,9 +76,11 @@ export async function buildApp() {
   await app.register(financialRoutes, { prefix: "/financial" });
   await app.register(ingredientsRoutes, { prefix: "/ingredients" });
   await app.register(productsRoutes, { prefix: "/products" });
+  await app.register(purchasesRoutes, { prefix: "/purchases" });
   await app.register(salesRoutes, { prefix: "/sales" });
   await app.register(stockRoutes, { prefix: "/stock" });
   await app.register(storesRoutes, { prefix: "/stores" });
+  await app.register(suppliersRoutes, { prefix: "/suppliers" });
   await app.register(taxAssistantRoutes, { prefix: "/tax-assistant" });
   await app.register(taxClassificationsRoutes, { prefix: "/tax-classifications" });
 

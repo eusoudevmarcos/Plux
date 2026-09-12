@@ -62,10 +62,24 @@ Incluído:
 - fechamento com saldo contado e diferença apurada;
 - listas operacionais de últimas vendas e movimentos.
 
+## Bloco integrado de compras
+
+Branch: `purchases-suppliers-inventory`.
+
+Incluído:
+
+- fornecedores por loja;
+- compras com itens por ingrediente;
+- entrada de estoque via compra;
+- custo médio ponderado por ingrediente;
+- atualização de CMV das fichas técnicas afetadas;
+- contas a pagar geradas por vencimento da compra;
+- tela `/compras` para lançamento operacional.
+
 ## Próximos blocos recomendados
 
-1. Compras e fornecedores, com atualização de custo do ingrediente.
-2. Importação de XML de NF-e e conversão para compra/entrada de estoque.
+1. Importação de XML de NF-e e conversão para compra/entrada de estoque.
+2. Baixa e pagamento de contas a pagar.
 3. Relatórios completos de vendas, CMV, estoque e DRE.
-4. Dashboard usando vendas reais, estoque crítico e margem por produto.
+4. Dashboard usando vendas reais, compras, estoque crítico e margem por produto.
 5. Gestão de usuários por cliente/loja.

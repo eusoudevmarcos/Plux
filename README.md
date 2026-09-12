@@ -1,6 +1,6 @@
 # PluxSales
 
-MVP web para food service com engenharia de cardápio, cadastro de ingredientes, produtos compostos, CMV, PDV com baixa de estoque por ficha técnica e classificação fiscal por linha.
+MVP web para food service com engenharia de cardápio, cadastro de ingredientes, produtos compostos, CMV, compras, fornecedores, PDV com baixa de estoque por ficha técnica e classificação fiscal por linha.
 
 ## Stack
 
@@ -33,6 +33,16 @@ O caixa (`/caixa`) já lança venda real:
 - registra movimento de caixa para cada venda;
 - permite sangria e suprimento;
 - fecha caixa com saldo esperado, saldo contado e diferença apurada.
+
+A entrada de compras (`/compras`) já registra operação real:
+
+- cadastra fornecedor por loja;
+- lança compra com ingredientes, quantidade e custo unitário;
+- atualiza estoque dos ingredientes;
+- recalcula custo médio ponderado;
+- atualiza o CMV das fichas técnicas que usam o ingrediente comprado;
+- grava `StockMovement` de entrada com origem `PURCHASE`;
+- gera conta a pagar quando a compra tem vencimento.
 
 ## Fonte da tabela IBS/CBS
 
@@ -138,6 +148,14 @@ GET    /products/:id
 PATCH  /products/:id/active
 POST   /products/create-full
 
+GET    /suppliers
+POST   /suppliers
+PATCH  /suppliers/:id
+
+GET    /purchases
+POST   /purchases
+GET    /purchases/payables
+
 GET    /sales
 POST   /sales/checkout
 POST   /sales/:id/cancel
@@ -176,7 +194,6 @@ Use:
 - Regras estaduais de ICMS por UF.
 - Perfis fiscais aprovados com trilha de usuário, data e parecer.
 - Emissão fiscal em ambiente homologação.
-- Compras e fornecedores com custo médio ponderado.
 - Importação de XML de NF-e para entrada de ingredientes.
 - Relatórios gerenciais completos de vendas, CMV, estoque e DRE.
 - PDV com exibição detalhada do split fiscal por item na finalização.

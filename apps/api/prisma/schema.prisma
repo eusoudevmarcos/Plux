@@ -57,8 +57,20 @@ enum StockMovementType {
 enum StockMovementOrigin {
   SALE
   SALE_CANCELLATION
+  PURCHASE
   MANUAL
   INVENTORY
+}
+
+enum PurchaseStatus {
+  POSTED
+  CANCELLED
+}
+
+enum PayableStatus {
+  OPEN
+  PAID
+  CANCELED
 }
 
 enum CashRegisterStatus {
@@ -159,6 +171,7 @@ model User {
   stores        Store[]
   stockMovements StockMovement[]
   sales         Sale[]
+  purchases     Purchase[]
   cashRegisters CashRegister[]
   cashMovements CashMovement[]
   customerAccount AuraCustomerAccount?
@@ -197,6 +210,9 @@ model Store {
   stockMovements     StockMovement[]
   sales              Sale[]
   cashRegisters      CashRegister[]
+  suppliers          Supplier[]
+  purchases          Purchase[]
+  accountsPayable    AccountPayable[]
 
   @@index([ownerId])
 }
@@ -298,6 +314,7 @@ model Ingredient {
   updatedAt           DateTime           @updatedAt
   productIngredients  ProductIngredient[]
   stockMovements      StockMovement[]
+  purchaseItems       PurchaseItem[]
 }
 
 model Product {
@@ -478,4 +495,94 @@ model CashMovement {
   user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([cashRegisterId])
+}
+
+model Supplier {
+  id          String   @id @default(cuid())
+  storeId     String?
+  name        String
+  document    String?
+  phone       String?
+  email       String?
+  contactName String?
+  notes       String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  store           Store?           @relation(fields: [storeId], references: [id], onDelete: SetNull)
+  purchases       Purchase[]
+  accountsPayable AccountPayable[]
+
+  @@index([storeId])
+  @@unique([storeId, document])
+}
+
+model Purchase {
+  id         String         @id @default(cuid())
+  storeId    String?
+  supplierId String?
+  userId     String?
+  number     Int
+  status     PurchaseStatus @default(POSTED)
+  issueDate  DateTime       @default(now())
+  total      Decimal        @default(0) @db.Decimal(12, 2)
+  notes      String?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  store           Store?           @relation(fields: [storeId], references: [id], onDelete: SetNull)
+  supplier        Supplier?        @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  user            User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  items           PurchaseItem[]
+  accountsPayable AccountPayable[]
+
+  @@index([storeId])
+  @@index([supplierId])
+  @@index([issueDate])
+  @@unique([storeId, number])
+}
+
+model PurchaseItem {
+  id               String  @id @default(cuid())
+  purchaseId       String
+  ingredientId     String
+  quantity         Decimal @db.Decimal(14, 3)
+  unitCost         Decimal @db.Decimal(12, 4)
+  totalCost        Decimal @db.Decimal(12, 2)
+  previousStock    Decimal @db.Decimal(14, 3)
+  previousUnitCost Decimal @db.Decimal(12, 4)
+  newStock         Decimal @db.Decimal(14, 3)
+  newUnitCost      Decimal @db.Decimal(12, 4)
+
+  purchase   Purchase   @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@index([purchaseId])
+  @@index([ingredientId])
+}
+
+model AccountPayable {
+  id          String        @id @default(cuid())
+  storeId     String?
+  supplierId  String?
+  purchaseId  String?
+  description String
+  amount      Decimal       @db.Decimal(12, 2)
+  dueDate     DateTime
+  paidAt      DateTime?
+  status      PayableStatus @default(OPEN)
+  notes       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  store    Store?    @relation(fields: [storeId], references: [id], onDelete: SetNull)
+  supplier Supplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  purchase Purchase? @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+
+  @@index([storeId])
+  @@index([supplierId])
+  @@index([purchaseId])
+  @@index([dueDate])
+  @@index([status])
 }

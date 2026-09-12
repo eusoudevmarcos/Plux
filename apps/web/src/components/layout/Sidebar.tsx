@@ -10,6 +10,7 @@ import {
   LogOut,
   PackageOpen,
   PlusCircle,
+  ShoppingBasket,
   Store,
 } from "lucide-react";
 import Link from "next/link";
@@ -22,6 +23,7 @@ import styles from "./layout.module.css";
 const items = [
   { href: "/lojas", label: "Lojas", icon: Building2 },
   { href: "/caixa", label: "Caixa", icon: Store },
+  { href: "/compras", label: "Compras", icon: ShoppingBasket },
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { href: "/ingredientes", label: "Ingredientes", icon: Boxes },
   { href: "/produtos", label: "Produtos", icon: PackageOpen },

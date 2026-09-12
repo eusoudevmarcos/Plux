@@ -1,0 +1,245 @@
+.page {
+  display: grid;
+  gap: 22px;
+}
+
+.titleRow {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.kicker {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.titleRow h2 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.storeCard {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 18px;
+}
+
+.storeCard div {
+  background: var(--surface-strong);
+  border-radius: 8px;
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+}
+
+.storeCard span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.storeCard strong {
+  font-size: 18px;
+}
+
+.alert,
+.empty,
+.success {
+  border-radius: 8px;
+  font-weight: 800;
+  padding: 12px;
+}
+
+.alert {
+  background: #fde8e5;
+  color: var(--danger);
+}
+
+.success {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.empty {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.grid {
+  align-items: start;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) 380px;
+}
+
+.purchaseCard,
+.supplierCard,
+.historyCard {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+}
+
+.sideStack {
+  display: grid;
+  gap: 16px;
+  position: sticky;
+  top: 18px;
+}
+
+.cardHeader {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+.cardHeader h3 {
+  font-size: 18px;
+  margin: 0 0 5px;
+}
+
+.cardHeader p {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.cardHeader strong {
+  font-size: 26px;
+  white-space: nowrap;
+}
+
+.formGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.itemsHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.itemsHeader h4 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.itemList {
+  display: grid;
+  gap: 10px;
+}
+
+.itemRow {
+  align-items: end;
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(180px, 1.4fr) minmax(90px, 0.7fr) minmax(110px, 0.8fr) minmax(110px, 0.8fr) auto;
+  padding: 12px;
+}
+
+.lineTotal {
+  display: grid;
+  gap: 6px;
+}
+
+.lineTotal span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.lineTotal strong {
+  font-size: 16px;
+  min-height: 42px;
+  padding-top: 10px;
+}
+
+.historyList {
+  display: grid;
+  gap: 10px;
+}
+
+.historyItem {
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.historyItem:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.historyItem strong,
+.historyItem span {
+  display: block;
+}
+
+.historyItem strong {
+  font-size: 14px;
+}
+
+.historyItem span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  margin-top: 3px;
+}
+
+.historyItem b {
+  white-space: nowrap;
+}
+
+.miniEmpty {
+  background: var(--surface-strong);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  padding: 12px;
+}
+
+@media (max-width: 1180px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sideStack {
+    position: static;
+  }
+}
+
+@media (max-width: 840px) {
+  .titleRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .storeCard,
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .itemRow {
+    grid-template-columns: 1fr;
+  }
+}

@@ -119,6 +119,89 @@ function buildSplitSimulation(input: {
   };
 }
 
+export async function ensureDefaultProductsForStore(storeId: string) {
+  const store = await prisma.store.findUnique({ where: { id: storeId } });
+
+  if (!store || store.taxRegime === "SIMPLES") {
+    return { created: 0 };
+  }
+
+  const [storeProductsForRegime, globalProductsForRegime] = await Promise.all([
+    prisma.product.count({ where: { storeId: store.id, taxProfile: { taxRegime: store.taxRegime } } }),
+    prisma.product.count({ where: { storeId: null, taxProfile: { taxRegime: store.taxRegime } } }),
+  ]);
+
+  if (storeProductsForRegime > 0 || globalProductsForRegime > 0) {
+    return { created: 0 };
+  }
+
+  const templates = await prisma.product.findMany({
+    where: { storeId: null, active: true, taxProfile: { taxRegime: "SIMPLES" } },
+    include: {
+      ingredients: true,
+      taxProfile: true,
+    },
+    orderBy: [{ category: "asc" }, { name: "asc" }],
+  });
+
+  let created = 0;
+
+  for (const template of templates) {
+    if (!template.taxProfile) continue;
+
+    const alreadyExists = await prisma.product.findFirst({
+      where: { storeId: store.id, sku: template.sku },
+      select: { id: true },
+    });
+
+    if (alreadyExists) continue;
+
+    await prisma.product.create({
+      data: {
+        storeId: store.id,
+        name: template.name,
+        sku: template.sku,
+        category: template.category,
+        salePrice: template.salePrice,
+        active: template.active,
+        preparationFee: template.preparationFee,
+        fiscalStrategy: template.fiscalStrategy,
+        ingredients: {
+          create: template.ingredients.map((item) => ({
+            ingredientId: item.ingredientId,
+            qtyUsed: item.qtyUsed,
+            unitCostSnapshot: item.unitCostSnapshot,
+            totalCostSnapshot: item.totalCostSnapshot,
+          })),
+        },
+        taxProfile: {
+          create: {
+            uf: store.state,
+            taxRegime: store.taxRegime,
+            ncm: template.taxProfile.ncm,
+            csosn: template.taxProfile.csosn,
+            pisCst: template.taxProfile.pisCst,
+            cofinsCst: template.taxProfile.cofinsCst,
+            cstIbsCbs: template.taxProfile.cstIbsCbs,
+            cClassTrib: template.taxProfile.cClassTrib,
+            taxClassificationId: template.taxProfile.taxClassificationId,
+            preparationFeeNcm: template.taxProfile.preparationFeeNcm,
+            preparationFeeCstIbsCbs: template.taxProfile.preparationFeeCstIbsCbs,
+            preparationFeeCClassTrib: template.taxProfile.preparationFeeCClassTrib,
+            preparationFeeTaxClassificationId: template.taxProfile.preparationFeeTaxClassificationId,
+            fiscalStrategy: template.taxProfile.fiscalStrategy,
+            legalBasis: `${template.taxProfile.legalBasis ?? ""}\nCatalogo clonado automaticamente para ${store.taxRegime}. Revisar CST, PIS/COFINS, ICMS e documentos antes de emissao oficial.`.trim(),
+            requiresLegalReview: true,
+          },
+        },
+      },
+    });
+    created += 1;
+  }
+
+  return { created };
+}
+
 export async function listProducts(options: { storeId?: string | null } = {}) {
   const store = options.storeId
     ? await prisma.store.findUnique({
@@ -126,14 +209,29 @@ export async function listProducts(options: { storeId?: string | null } = {}) {
       })
     : null;
 
+  if (store) {
+    await ensureDefaultProductsForStore(store.id);
+  }
+
+  const storeProductsCount = store
+    ? await prisma.product.count({ where: { storeId: store.id, taxProfile: { taxRegime: store.taxRegime } } })
+    : 0;
+
   return prisma.product.findMany({
     where: store
-      ? {
-          OR: [{ storeId: store.id }, { storeId: null }],
-          taxProfile: {
-            taxRegime: store.taxRegime,
-          },
-        }
+      ? storeProductsCount > 0
+        ? {
+            storeId: store.id,
+            taxProfile: {
+              taxRegime: store.taxRegime,
+            },
+          }
+        : {
+            storeId: null,
+            taxProfile: {
+              taxRegime: store.taxRegime,
+            },
+          }
       : undefined,
     include: {
       ingredients: {

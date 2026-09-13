@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma.js";
+import { ensureDefaultProductsForStore } from "../products/products.service.js";
 import type { StoreCreateInput, StoreUpdateInput } from "./stores.schema.js";
 
 function cleanDocument(document?: string | null) {
@@ -24,7 +25,7 @@ export async function getStore(ownerId: string, id: string) {
 }
 
 export async function createStore(ownerId: string, input: StoreCreateInput) {
-  return prisma.store.create({
+  const store = await prisma.store.create({
     data: {
       ownerId,
       legalName: input.legalName,
@@ -41,6 +42,10 @@ export async function createStore(ownerId: string, input: StoreCreateInput) {
       active: input.active,
     },
   });
+
+  await ensureDefaultProductsForStore(store.id);
+
+  return store;
 }
 
 export async function updateStore(ownerId: string, id: string, input: StoreUpdateInput) {
@@ -50,7 +55,7 @@ export async function updateStore(ownerId: string, id: string, input: StoreUpdat
     throw new Error("Loja nao encontrada.");
   }
 
-  return prisma.store.update({
+  const updatedStore = await prisma.store.update({
     where: { id },
     data: {
       ...(input.legalName !== undefined ? { legalName: input.legalName } : {}),
@@ -67,4 +72,10 @@ export async function updateStore(ownerId: string, id: string, input: StoreUpdat
       ...(input.active !== undefined ? { active: input.active } : {}),
     },
   });
+
+  if (input.taxRegime !== undefined) {
+    await ensureDefaultProductsForStore(updatedStore.id);
+  }
+
+  return updatedStore;
 }

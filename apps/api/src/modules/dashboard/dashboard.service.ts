@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma.js";
+import { ensureDefaultProductsForStore } from "../products/products.service.js";
 import { roundMoney } from "../tax/tax-rates.js";
 
 function toNumber(value: unknown) {
@@ -59,6 +60,14 @@ export async function getCriticalStockReport(userId: string, options: { storeId:
 export async function getDashboardSummary(userId: string, options: { storeId: string }) {
   const store = await assertStoreOwner(userId, options.storeId);
   const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  await ensureDefaultProductsForStore(store.id);
+  const storeProductsCount = await prisma.product.count({
+    where: { storeId: store.id, taxProfile: { taxRegime: store.taxRegime } },
+  });
+  const productWhere =
+    storeProductsCount > 0
+      ? { storeId: store.id, taxProfile: { taxRegime: store.taxRegime } }
+      : { storeId: null, taxProfile: { taxRegime: store.taxRegime } };
 
   const [
     salesAggregate,
@@ -93,11 +102,7 @@ export async function getDashboardSummary(userId: string, options: { storeId: st
     prisma.accountPayable.count({ where: { storeId: store.id, status: "OPEN", dueDate: { lt: new Date() } } }),
     prisma.ingredient.findMany({ include: { taxClassification: true } }),
     prisma.product.findMany({
-      where: {
-        active: true,
-        OR: [{ storeId: store.id }, { storeId: null }],
-        taxProfile: { taxRegime: store.taxRegime },
-      },
+      where: { active: true, ...productWhere },
       include: { ingredients: true, taxProfile: true },
     }),
     prisma.stockMovement.findMany({

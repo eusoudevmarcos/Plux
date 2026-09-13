@@ -1,5 +1,6 @@
 import type { Product, ProductIngredient } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
+import { ensureDefaultProductsForStore } from "../products/products.service.js";
 import { roundMoney } from "../tax/tax-rates.js";
 
 type ProductWithIngredients = Product & {
@@ -44,18 +45,23 @@ export async function getProductFinancialReport(options: { storeId?: string | nu
         where: { id: options.storeId },
       })
     : null;
+  if (store) {
+    await ensureDefaultProductsForStore(store.id);
+  }
+  const storeProductsCount = store
+    ? await prisma.product.count({ where: { storeId: store.id, taxProfile: { taxRegime: store.taxRegime } } })
+    : 0;
+  const productWhere =
+    store && storeProductsCount > 0
+      ? { storeId: store.id, taxProfile: { taxRegime: store.taxRegime } }
+      : store
+        ? { storeId: null, taxProfile: { taxRegime: store.taxRegime } }
+        : undefined;
 
   const [companyProfile, products] = await Promise.all([
     prisma.companyProfile.findUnique({ where: { id: "main" } }),
     prisma.product.findMany({
-      where: store
-        ? {
-            OR: [{ storeId: store.id }, { storeId: null }],
-            taxProfile: {
-              taxRegime: store.taxRegime,
-            },
-          }
-        : undefined,
+      where: productWhere,
       include: { ingredients: true },
       orderBy: [{ active: "desc" }, { category: "asc" }, { name: "asc" }],
     }),

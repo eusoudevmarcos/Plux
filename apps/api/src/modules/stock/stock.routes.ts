@@ -1,6 +1,8 @@
 import type { FastifyInstance } from "fastify";
 import { requirePlatformAccess } from "../auth/auth.service.js";
 import { prisma } from "../../lib/prisma.js";
+import { parseId } from "../../lib/http.js";
+import { getCriticalStockReport } from "../dashboard/dashboard.service.js";
 
 export async function stockRoutes(app: FastifyInstance) {
   app.get("/movements", async (request, reply) => {
@@ -21,6 +23,16 @@ export async function stockRoutes(app: FastifyInstance) {
       });
     } catch (error) {
       return reply.code(400).send({ message: error instanceof Error ? error.message : "Erro ao listar estoque." });
+    }
+  });
+
+  app.get("/critical", async (request, reply) => {
+    try {
+      const user = await requirePlatformAccess(request);
+      const { storeId } = request.query as { storeId?: string };
+      return await getCriticalStockReport(user.id, { storeId: parseId(storeId) });
+    } catch (error) {
+      return reply.code(400).send({ message: error instanceof Error ? error.message : "Erro ao listar estoque critico." });
     }
   });
 }

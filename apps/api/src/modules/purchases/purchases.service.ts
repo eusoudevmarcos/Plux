@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 import { roundMoney } from "../tax/tax-rates.js";
-import type { PurchaseCreateInput } from "./purchases.schema.js";
+import type { PayablePaymentInput, PurchaseCreateInput } from "./purchases.schema.js";
 
 type TxClient = Prisma.TransactionClient;
 
@@ -72,6 +72,37 @@ export async function listAccountPayables(userId: string, options: { storeId: st
     include: { supplier: true, purchase: true },
     orderBy: [{ status: "asc" }, { dueDate: "asc" }],
     take: 100,
+  });
+}
+
+export async function markAccountPayablePaid(userId: string, payableId: string, input: PayablePaymentInput) {
+  const payable = await prisma.accountPayable.findFirst({
+    where: { id: payableId, store: { ownerId: userId } },
+  });
+
+  if (!payable) {
+    throw new Error("Conta a pagar nao encontrada para este usuario.");
+  }
+
+  if (payable.status === "CANCELED") {
+    throw new Error("Conta cancelada nao pode ser marcada como paga.");
+  }
+
+  if (payable.status === "PAID") {
+    return prisma.accountPayable.findUnique({
+      where: { id: payable.id },
+      include: { supplier: true, purchase: true },
+    });
+  }
+
+  return prisma.accountPayable.update({
+    where: { id: payable.id },
+    data: {
+      status: "PAID",
+      paidAt: input.paidAt ?? new Date(),
+      notes: input.notes ?? payable.notes,
+    },
+    include: { supplier: true, purchase: true },
   });
 }
 

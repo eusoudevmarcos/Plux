@@ -209,6 +209,18 @@
   white-space: nowrap;
 }
 
+.payableActions {
+  align-items: flex-end;
+  display: grid;
+  gap: 8px;
+  justify-items: end;
+}
+
+.payableActions button {
+  min-height: 34px;
+  padding: 8px 10px;
+}
+
 .miniEmpty {
   background: var(--surface-strong);
   border-radius: 8px;
@@ -241,5 +253,16 @@
 
   .itemRow {
     grid-template-columns: 1fr;
+  }
+
+  .historyItem {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .payableActions {
+    align-items: stretch;
+    justify-items: stretch;
+    width: 100%;
   }
 }

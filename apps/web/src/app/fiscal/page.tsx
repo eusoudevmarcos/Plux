@@ -1,6 +1,6 @@
-import { TaxCatalogPage } from "@/features/tax/components/TaxCatalogPage";
+import { FiscalOperationsPage } from "@/features/fiscal/components/FiscalOperationsPage";
 
 export default function FiscalPage() {
-  return <TaxCatalogPage />;
+  return <FiscalOperationsPage />;
 }
 

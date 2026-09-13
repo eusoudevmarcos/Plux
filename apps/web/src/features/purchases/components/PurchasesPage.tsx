@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, ReceiptText, RotateCw, Save, Truck } from "lucide-react";
+import { CheckCircle2, Plus, ReceiptText, RotateCw, Save, Truck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
@@ -18,6 +18,7 @@ import {
   getAccountPayables,
   getPurchases,
   getSuppliers,
+  markAccountPayablePaid,
 } from "../api/purchasesApi";
 import type { AccountPayable, Purchase, Supplier } from "../types";
 import styles from "./PurchasesPage.module.css";
@@ -79,6 +80,7 @@ export function PurchasesPage() {
   const [items, setItems] = useState<DraftItem[]>([{ ...emptyItem }]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [payingPayableId, setPayingPayableId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -224,6 +226,23 @@ export function PurchasesPage() {
       setError(err instanceof Error ? err.message : "Erro ao lançar compra.");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handlePayablePaid(payable: AccountPayable) {
+    if (!store || payable.status !== "OPEN") return;
+
+    setPayingPayableId(payable.id);
+    setError(null);
+    setSuccess(null);
+    try {
+      await markAccountPayablePaid(payable.id, { notes: "Baixa manual pela tela de compras." });
+      await loadData(store.id);
+      setSuccess(`${payable.description} marcada como paga.`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao baixar conta a pagar.");
+    } finally {
+      setPayingPayableId(null);
     }
   }
 
@@ -383,9 +402,25 @@ export function PurchasesPage() {
                   <div className={styles.historyItem} key={payable.id}>
                     <div>
                       <strong>{payable.description}</strong>
-                      <span>{payableLabel(payable.status)} · vence {formatDate(payable.dueDate)}</span>
+                      <span>
+                        {payableLabel(payable.status)} · vence {formatDate(payable.dueDate)}
+                        {payable.paidAt ? ` · pago ${formatDate(payable.paidAt)}` : ""}
+                      </span>
                     </div>
-                    <b>{formatMoney(numberValue(payable.amount))}</b>
+                    <div className={styles.payableActions}>
+                      <b>{formatMoney(numberValue(payable.amount))}</b>
+                      {payable.status === "OPEN" ? (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          disabled={payingPayableId === payable.id}
+                          onClick={() => handlePayablePaid(payable)}
+                        >
+                          <CheckCircle2 size={15} aria-hidden />
+                          {payingPayableId === payable.id ? "Baixando..." : "Marcar pago"}
+                        </Button>
+                      ) : null}
+                    </div>
                   </div>
                 ))}
               </div>

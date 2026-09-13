@@ -1,0 +1,164 @@
+.page {
+  display: grid;
+  gap: 22px;
+}
+
+.titleRow {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.titleRow h2 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.kicker {
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 900;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.summaryCard {
+  align-items: center;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 220px repeat(2, minmax(0, 1fr));
+  padding: 18px;
+}
+
+.summaryCard div:not(.statusBadge) {
+  background: var(--surface-strong);
+  border-radius: 8px;
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+}
+
+.summaryCard span,
+.checkCard span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.summaryCard strong {
+  font-size: 17px;
+}
+
+.statusBadge {
+  align-items: center;
+  border-radius: 8px;
+  display: flex;
+  font-weight: 900;
+  gap: 8px;
+  min-height: 58px;
+  padding: 14px;
+}
+
+.statusBadge[data-level="OK"] {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.statusBadge[data-level="ATTENTION"] {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.statusBadge[data-level="BLOCKED"] {
+  background: #fde8e5;
+  color: var(--danger);
+}
+
+.checkGrid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.checkCard {
+  align-items: flex-start;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  padding: 16px;
+}
+
+.checkIcon {
+  align-items: center;
+  border-radius: 8px;
+  display: flex;
+  height: 34px;
+  justify-content: center;
+  width: 34px;
+}
+
+.checkCard[data-level="OK"] .checkIcon {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.checkCard[data-level="ATTENTION"] .checkIcon {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.checkCard[data-level="BLOCKED"] .checkIcon {
+  background: #fde8e5;
+  color: var(--danger);
+}
+
+.checkCard strong,
+.checkCard p {
+  display: block;
+}
+
+.checkCard strong {
+  font-size: 16px;
+  margin: 4px 0 6px;
+}
+
+.checkCard p {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.alert,
+.empty {
+  border-radius: 8px;
+  font-weight: 800;
+  padding: 12px;
+}
+
+.alert {
+  background: #fde8e5;
+  color: var(--danger);
+}
+
+.empty {
+  background: var(--surface-strong);
+  color: var(--muted);
+}
+
+@media (max-width: 980px) {
+  .summaryCard,
+  .checkGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .titleRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -73,6 +73,35 @@ enum PayableStatus {
   CANCELED
 }
 
+enum FiscalDocumentType {
+  NFE
+  NFCE
+  NFE_DEVOLUCAO
+}
+
+enum FiscalDocumentStatus {
+  DRAFT
+  VALIDATED
+  TRANSMISSION_BLOCKED
+  QUEUED
+  AUTHORIZED
+  REJECTED
+  CANCELLED
+}
+
+enum FiscalEventType {
+  TRANSMISSAO
+  CANCELAMENTO
+  DEVOLUCAO
+  CARTA_CORRECAO
+  INUTILIZACAO
+}
+
+enum FiscalEnvironment {
+  HOMOLOGATION
+  PRODUCTION
+}
+
 enum CashRegisterStatus {
   OPEN
   CLOSED
@@ -213,6 +242,8 @@ model Store {
   suppliers          Supplier[]
   purchases          Purchase[]
   accountsPayable    AccountPayable[]
+  fiscalDocuments    FiscalDocument[]
+  fiscalSequences    FiscalSequence[]
 
   @@index([ownerId])
 }
@@ -424,6 +455,7 @@ model Sale {
   cashRegister CashRegister? @relation(fields: [cashRegisterId], references: [id], onDelete: SetNull)
   items        SaleItem[]
   payments     Payment[]
+  fiscalDocuments FiscalDocument[]
 
   @@index([storeId])
   @@index([status])
@@ -536,6 +568,7 @@ model Purchase {
   user            User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
   items           PurchaseItem[]
   accountsPayable AccountPayable[]
+  fiscalDocuments FiscalDocument[]
 
   @@index([storeId])
   @@index([supplierId])
@@ -585,4 +618,73 @@ model AccountPayable {
   @@index([purchaseId])
   @@index([dueDate])
   @@index([status])
+}
+
+model FiscalSequence {
+  id           String              @id @default(cuid())
+  storeId      String
+  documentType FiscalDocumentType
+  environment  FiscalEnvironment   @default(HOMOLOGATION)
+  series       String              @default("1")
+  currentNumber Int                @default(0)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@unique([storeId, documentType, environment, series])
+  @@index([storeId])
+}
+
+model FiscalDocument {
+  id              String               @id @default(cuid())
+  storeId         String
+  saleId          String?
+  purchaseId      String?
+  type            FiscalDocumentType
+  environment     FiscalEnvironment    @default(HOMOLOGATION)
+  status          FiscalDocumentStatus @default(DRAFT)
+  series          String               @default("1")
+  number          Int
+  accessKey       String?
+  protocol        String?
+  rejectionReason String?
+  payload         Json
+  xml             String?
+  xmlSha256       String?
+  issuedAt        DateTime?
+  authorizedAt    DateTime?
+  cancelledAt     DateTime?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  store    Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  sale     Sale?    @relation(fields: [saleId], references: [id], onDelete: SetNull)
+  purchase Purchase? @relation(fields: [purchaseId], references: [id], onDelete: SetNull)
+  events   FiscalDocumentEvent[]
+
+  @@unique([storeId, type, environment, series, number])
+  @@index([storeId])
+  @@index([saleId])
+  @@index([purchaseId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model FiscalDocumentEvent {
+  id         String               @id @default(cuid())
+  documentId String
+  type       FiscalEventType
+  status     FiscalDocumentStatus @default(DRAFT)
+  reason     String?
+  protocol   String?
+  payload    Json?
+  response   Json?
+  createdAt  DateTime             @default(now())
+
+  document FiscalDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@index([type])
+  @@index([createdAt])
 }

@@ -32,6 +32,7 @@ export type AccountPayable = {
   dueDate: string;
   paidAt?: string | null;
   status: "OPEN" | "PAID" | "CANCELED";
+  notes?: string | null;
   supplier?: Supplier | null;
 };
 

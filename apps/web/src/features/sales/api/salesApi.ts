@@ -17,6 +17,23 @@ export type SaleCheckoutPayload = {
   }>;
 };
 
+export type Sale = {
+  id: string;
+  number: number;
+  customerName?: string | null;
+  status: "OPEN" | "COMPLETED" | "CANCELLED";
+  subtotal: string | number;
+  discount: string | number;
+  total: string | number;
+  totalCost: string | number;
+  closedAt?: string | null;
+  createdAt: string;
+};
+
+export function getSales(storeId: string) {
+  return apiFetch<Sale[]>(`/sales?storeId=${encodeURIComponent(storeId)}`);
+}
+
 export function checkoutSale(payload: SaleCheckoutPayload) {
   return apiFetch<{ id: string; number: number; total: string | number }>("/sales/checkout", {
     method: "POST",

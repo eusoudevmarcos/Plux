@@ -5,6 +5,7 @@ import {
   Boxes,
   Building2,
   ChefHat,
+  ClipboardCheck,
   CircleDollarSign,
   FileText,
   LogOut,
@@ -31,6 +32,7 @@ const items = [
   { href: "/financeiro", label: "Financeiro", icon: CircleDollarSign },
   { href: "/empresa", label: "Empresa", icon: Building2 },
   { href: "/fiscal", label: "Fiscal", icon: FileText },
+  { href: "/status", label: "Status", icon: ClipboardCheck },
 ];
 
 export function Sidebar() {

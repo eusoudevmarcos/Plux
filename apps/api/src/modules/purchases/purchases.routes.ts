@@ -1,8 +1,8 @@
 import type { FastifyInstance } from "fastify";
 import { formatZodError, parseId } from "../../lib/http.js";
 import { requirePlatformAccess } from "../auth/auth.service.js";
-import { createPurchase, listAccountPayables, listPurchases } from "./purchases.service.js";
-import { purchaseCreateSchema } from "./purchases.schema.js";
+import { createPurchase, listAccountPayables, listPurchases, markAccountPayablePaid } from "./purchases.service.js";
+import { payablePaymentSchema, purchaseCreateSchema } from "./purchases.schema.js";
 
 export async function purchasesRoutes(app: FastifyInstance) {
   app.get("/", async (request, reply) => {
@@ -30,6 +30,17 @@ export async function purchasesRoutes(app: FastifyInstance) {
       const user = await requirePlatformAccess(request);
       const input = purchaseCreateSchema.parse(request.body);
       return await createPurchase(user.id, input);
+    } catch (error) {
+      return reply.code(400).send({ message: error instanceof Error ? error.message : formatZodError(error) });
+    }
+  });
+
+  app.patch("/payables/:id/pay", async (request, reply) => {
+    try {
+      const user = await requirePlatformAccess(request);
+      const { id } = request.params as { id?: string };
+      const input = payablePaymentSchema.parse(request.body ?? {});
+      return await markAccountPayablePaid(user.id, parseId(id), input);
     } catch (error) {
       return reply.code(400).send({ message: error instanceof Error ? error.message : formatZodError(error) });
     }

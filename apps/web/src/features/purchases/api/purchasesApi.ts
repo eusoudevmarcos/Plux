@@ -26,3 +26,10 @@ export function createPurchase(payload: PurchaseCreatePayload) {
 export function getAccountPayables(storeId: string) {
   return apiFetch<AccountPayable[]>(`/purchases/payables?storeId=${encodeURIComponent(storeId)}`);
 }
+
+export function markAccountPayablePaid(id: string, payload: { paidAt?: string; notes?: string | null } = {}) {
+  return apiFetch<AccountPayable>(`/purchases/payables/${id}/pay`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}

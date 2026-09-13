@@ -21,4 +21,10 @@ export const purchaseCreateSchema = z.object({
     .min(1),
 });
 
+export const payablePaymentSchema = z.object({
+  paidAt: z.coerce.date().optional(),
+  notes: nullableText(),
+});
+
 export type PurchaseCreateInput = z.infer<typeof purchaseCreateSchema>;
+export type PayablePaymentInput = z.infer<typeof payablePaymentSchema>;

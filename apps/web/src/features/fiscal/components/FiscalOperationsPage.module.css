@@ -1,0 +1,221 @@
+.page {
+  display: grid;
+  gap: 22px;
+}
+
+.titleRow {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.titleRow h2 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.kicker {
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 900;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.headerActions {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.headerActions a {
+  color: var(--accent-strong);
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.noticeCard {
+  background: var(--surface-strong);
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+}
+
+.noticeCard strong {
+  font-size: 16px;
+}
+
+.noticeCard span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.actionGrid {
+  align-items: start;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.panel,
+.tableCard {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.cardHeader {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+.cardHeader h3 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.cardHeader span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.list {
+  display: grid;
+  gap: 10px;
+}
+
+.listItem {
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.listItem:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.listItem strong,
+.listItem span {
+  display: block;
+}
+
+.listItem span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  margin-top: 3px;
+}
+
+.itemActions,
+.tableActions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.tableWrap th {
+  color: var(--muted);
+  font-size: 12px;
+  padding: 0 12px 12px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tableWrap td {
+  border-top: 1px solid var(--border);
+  padding: 14px 12px;
+  vertical-align: top;
+}
+
+.tableWrap td strong,
+.tableWrap td span,
+.tableWrap td small {
+  display: block;
+}
+
+.tableWrap td span,
+.tableWrap td small {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.statusPill {
+  border-radius: 999px;
+  font-weight: 900;
+  padding: 5px 9px;
+  width: max-content;
+}
+
+.statusPill[data-status="VALIDATED"] {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.statusPill[data-status="TRANSMISSION_BLOCKED"],
+.statusPill[data-status="REJECTED"] {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.statusPill[data-status="CANCELLED"] {
+  background: #fde8e5;
+  color: var(--danger);
+}
+
+.alert,
+.empty,
+.success {
+  border-radius: 8px;
+  font-weight: 800;
+  padding: 12px;
+}
+
+.alert {
+  background: #fde8e5;
+  color: var(--danger);
+}
+
+.success {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.empty {
+  background: var(--surface-strong);
+  color: var(--muted);
+}
+
+@media (max-width: 1100px) {
+  .actionGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .titleRow,
+  .headerActions,
+  .listItem {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .itemActions,
+  .tableActions {
+    justify-content: flex-start;
+  }
+}
